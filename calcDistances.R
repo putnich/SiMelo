@@ -7,8 +7,12 @@ calcDistances <- function(eigensList) {
       distanceMatrix[i,j] <- dist(rbind(eigensList[[i]], eigensList[[j]])) 
       distanceMatrix[j,i] <- dist(rbind(eigensList[[i]], eigensList[[j]]))
       distanceMatrix[i,i] <- 0
-      if(i>j || i==j) {
+      if(i>j) {
         triangDistanceMatrix[i,j] <- ''
+        next()
+      }
+      else if(i==j) {
+        triangDistanceMatrix[i,j] <- 0
         next()
       }
       else {
@@ -17,7 +21,6 @@ calcDistances <- function(eigensList) {
         triangDistanceMatrix[i,j] <- round(d)
       }
     }
-    i <- i + 1
   }
   print("-----------------------------------------------------------")
   print("Triangular distance matrix (triang(D)):")

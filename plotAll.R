@@ -1,5 +1,5 @@
 plotAll <- function(distanceMatrix) {
-  len <- dim(distanceMatrix)[1]
+  # len <- dim(distanceMatrix)[1]
   # for(i in 1:len) {
   #   plot(distanceMatrix[,i])
   #   png(paste("plot", i, ".png", sep=""))
