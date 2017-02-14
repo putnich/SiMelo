@@ -9,6 +9,7 @@ main <- function(path) {
   print("-----------------------------------------------------------")
   print(melodiesList)
   matricesList <- makeMatrices(melodiesList)
+  makeGraphs(matricesList)
   print("-----------------------------------------------------------")
   print("Adjacency matrices (A) for melodies, respectively:")
   print("-----------------------------------------------------------")
@@ -22,6 +23,5 @@ main <- function(path) {
   print("Euclidean distances, respectively:")
   print("-----------------------------------------------------------")
   distanceMatrix <- calcDistances(eigensList)
-  plotAll(distanceMatrix)
   
 }
