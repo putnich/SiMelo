@@ -4,5 +4,5 @@ run <- function() {
   source(paste(getwd(), "/calcEigens.R", sep=""))
   source(paste(getwd(), "/calcDistances.R", sep=""))
   source(paste(getwd(), "/makeGraphs.R", sep=""))
-  main(paste(getwd(), "/first.melodies", sep=''))
+  main(paste(getwd(), "/first-melodies.txt", sep=''))
 }
