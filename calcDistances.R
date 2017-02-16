@@ -1,6 +1,6 @@
 calcDistances <- function(eigensList) {
   len<-length(eigensList)
-  distanceMatrix <- matrix(ncol = len, nrow = len)
+  distanceMatrix <- matrix(ncol = len, nrow = len, dimnames = list(c(1:len), c(1:len)))
   for(i in 1:len) {
     for(j in 1:len) {
       distanceMatrix[i,j] = distanceMatrix[j,i] <- dist(rbind(eigensList[[i]], eigensList[[j]]))
@@ -33,10 +33,10 @@ calcDistances <- function(eigensList) {
   qgraph(distanceMatrix, layout="spring", vsize=3)
   dev.off()
   
-  jpeg("distancePlots/dendrogram.jpg", width=1000, height=1000, unit='px')
-  dendrogram <- hclust(dist(distanceMatrix), method="ward.D")
-  plot(dendrogram)
-  
+  library(igraph)
+  g <- graph_from_adjacency_matrix(distanceMatrix, mode="undirected", weighted = T)
+  plot(g)
+  calcMetrics(g)
   
   distanceMatrix
 }

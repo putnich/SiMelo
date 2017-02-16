@@ -21,6 +21,10 @@ main <- function(path) {
   print("Euclidean distances, respectively:")
   print("-----------------------------------------------------------")
   distanceMatrix <- calcDistances(eigensList)
+  print("-----------------------------------------------------------")
+  print("Cluster analysis:")
+  print("-----------------------------------------------------------")
+  calcClusters(distanceMatrix)
   makeGraphs(matricesList)
   
 }

@@ -8,7 +8,7 @@ makeMatrices <- function(melodiesList) {
     vLen <- length(melodiesList[[i]])
     for(j in 1:vLen) {
       if(j == vLen) {
-        m[melodiesList[[i]][vLen-1], melodiesList[[i]][0]] <- m[melodiesList[[i]][vLen-1], melodiesList[[i]][0]] + 1
+        m[melodiesList[[i]][vLen], melodiesList[[i]][0]] <- m[melodiesList[[i]][vLen], melodiesList[[i]][0]] + 1
       }
       else m[melodiesList[[i]][j], melodiesList[[i]][j+1]] <- m[melodiesList[[i]][j], melodiesList[[i]][j+1]] + 1
     }
