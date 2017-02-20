@@ -6,5 +6,5 @@ run <- function() {
   source(paste(getwd(), "/makeGraphs.R", sep=""))
   source(paste(getwd(), "/calcMetrics.R", sep=""))
   source(paste(getwd(), "/calcClusters.R", sep=""))
-  main(paste(getwd(), "/first-melodies.txt", sep=''))
+  main(paste(getwd(), "/melodies.csv", sep=''))
 }

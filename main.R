@@ -1,8 +1,10 @@
 main <- function(path) {
-  l<-list()
-  notesChar <- readChar(con = path, file.info(path)$size)
-  notes <- strsplit(notesChar, "\\r\\n")
-  melodiesList <- strsplit(notes[[1]], "[ ]");
+  melodiesList <- list()
+  melodiesTable <- read.csv(path, sep=",")
+  len <- length(melodiesTable$Melody.name)
+  for(i in 1:len) {
+    melodiesList[i] <- strsplit(as.character(melodiesTable$Melody[[i]]), "[ ]")
+  }
   print("-----------------------------------------------------------")
   print("Melodies list:")
   print("-----------------------------------------------------------")
@@ -20,11 +22,11 @@ main <- function(path) {
   print("-----------------------------------------------------------")
   print("Euclidean distances, respectively:")
   print("-----------------------------------------------------------")
-  distanceMatrix <- calcDistances(eigensList)
+  distanceMatrix <- calcDistances(melodiesTable$Melody.name, eigensList)
   print("-----------------------------------------------------------")
   print("Cluster analysis:")
   print("-----------------------------------------------------------")
-  calcClusters(distanceMatrix)
+  calcClusters(melodiesTable, distanceMatrix, eigensList)
   makeGraphs(matricesList)
   
 }
