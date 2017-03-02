@@ -2,8 +2,8 @@ calcEigens <- function(matricesList) {
   eigensList <- list()
   len <- length(matricesList)
   for(i in 1:len) {
-    e <- eigen(matricesList[[i]]%*%t(matricesList[[i]]))
-    eigensList[[i]] <- e$values
+    e <- eigen(matricesList[[i]]%*%t(matricesList[[i]])) #Calculating eigenvalues for A*A' matrix
+    eigensList[i] <- e$values
   }
   eigensList
 }
