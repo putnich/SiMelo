@@ -30,7 +30,7 @@ calcDistances <- function(melodies, eigensList) {
   }
 
  
-  jpeg("distancePlots/distanceGraph1.jpg", width=3000, height=3000, unit='px') #plotting distance matrix graph using qgraph
+  jpeg("distancePlots/distanceGraph1.jpg", width=5000, height=5000, unit='px') #plotting distance matrix graph using qgraph
   qgraph(distanceMatrix, layout="spring", vsize=3)
   dev.off()
 
