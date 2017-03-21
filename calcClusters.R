@@ -1,5 +1,6 @@
 calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
   #libraries
+  library(TraMineR)
   library(cluster)
   
   #creating folder for cluster plots
@@ -33,7 +34,8 @@ calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
 
   #K-means clustering for different k
   kmeansss <- list()
-  for(k in 2:6) {
+  for(k in 1:10) {
+    set.seed(5)
     km <- kmeans(do.call(rbind, eigensList), k)
     cKm <- km$cluster
     len <- length(colNames)
@@ -46,7 +48,7 @@ calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
     print(paste("Total within-cluster sum of squares: ", km$tot.withinss, sep=""))
     print(paste("The ratio of between-cluster sum of squares and total sum of squares: ", km$betweenss/km$totss, sep=""))
   }
-  plot(2:6, unlist(kmeansss), type="b") #Elbow method
+  plot(1:10, unlist(kmeansss), type="b") #Elbow method
   
   #Kmedoids clustering for different k, with silhouette info
   kmedoidssw <- list()
@@ -55,6 +57,7 @@ calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
     print("K-medoids clustering")
     print(paste("Number of clusters ", k, sep=""))
     print("-----------------------------------------------------------")
+    set.seed(5)
     mCluster <- pam(do.call(rbind, eigensList), k)
     cM <- mCluster$clustering
     plot(mCluster)
@@ -69,6 +72,48 @@ calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
     print(as.data.frame(list("Melody number" = colNames, "Author" = author, "Predicted cluster number" = cM)))
   }
   plot(2:6, unlist(kmedoidssw), type="b") #Plotting average silhouette widths per number of clusters
+  
+  #TraMineR
+  #Matching with OM method
+  seq <- seqdef(melodiesTable,3)
+  ccost <- seqsubm(seq, method = "CONSTANT")
+  sd <- seqdist(seq, method="OM", sm=ccost)
+  rownames(sd) <- melodiesTable$Melody.name
+  colnames(sd) <- melodiesTable$Melody.name
+  cl <- agnes(sd, diss=T, method="ward")
+  jpeg("clusterPlots/dendrogramForTraMineR-OM.jpg", width=1000, height=1000, unit='px')
+  plot(cl)
+  dev.off()
+  #Matching with LCP method
+  seq <- seqdef(melodiesTable,3)
+  ccost <- seqsubm(seq, method = "CONSTANT")
+  sd <- seqdist(seq, method="LCP", sm=ccost)
+  rownames(sd) <- melodiesTable$Melody.name
+  colnames(sd) <- melodiesTable$Melody.name
+  cl <- agnes(sd, diss=T, method="ward")
+  jpeg("clusterPlots/dendrogramForTraMineR-LCP.jpg", width=1000, height=1000, unit='px')
+  plot(cl)
+  dev.off()
+  #Matching with RLCP method
+  seq <- seqdef(melodiesTable,3)
+  ccost <- seqsubm(seq, method = "CONSTANT")
+  sd <- seqdist(seq, method="RLCP", sm=ccost)
+  rownames(sd) <- melodiesTable$Melody.name
+  colnames(sd) <- melodiesTable$Melody.name
+  cl <- agnes(sd, diss=T, method="ward")
+  jpeg("clusterPlots/dendrogramForTraMineR-RLCP.jpg", width=1000, height=1000, unit='px')
+  plot(cl)
+  dev.off()
+  #Matching with LCS method
+  seq <- seqdef(melodiesTable,3)
+  ccost <- seqsubm(seq, method = "CONSTANT")
+  sd <- seqdist(seq, method="LCS", sm=ccost)
+  rownames(sd) <- melodiesTable$Melody.name
+  colnames(sd) <- melodiesTable$Melody.name
+  cl <- agnes(sd, diss=T, method="ward")
+  jpeg("clusterPlots/dendrogramForTraMineR-LCS.jpg", width=1000, height=1000, unit='px')
+  plot(cl)
+  dev.off()
 }
 
 
