@@ -17,8 +17,11 @@ main <- function(path) {
    # analyse(melodiesList, durationsList, melodiesTable, "multi")
 
 
-   #Analysing melodies using multigraph with cumulative durations
-   analyse(melodiesList, durationsList, melodiesTable, "duration")
+  #Analysing melodies using multigraph with cumulative durations
+  analyse(melodiesList, durationsList, melodiesTable, "duration")
+  
+  #Analysing melodies using multigraph with average durations
+  analyse(melodiesList, durationsList, melodiesTable, "duration-average")
    
 }
  analyse <- function(melodiesList, durationsList, melodiesTable, type) {
