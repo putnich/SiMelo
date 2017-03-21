@@ -5,8 +5,8 @@ main <- function(path) {
   melodiesTable <- read.csv(path, sep=";") #Reading melodies from a .csv file
   len <- length(melodiesTable$Melody.name)
   for(i in 1:len) {
-    melodiesList[i] <- strsplit(as.character(melodiesTable$Melody[[i]]), "[ ]")
-    durationsList[i] <- strsplit(as.character(melodiesTable$Duration[[i]]), "[ ]")
+    melodiesList[i] <- strsplit(as.character(melodiesTable$Melody[[i]]), "[-]")
+    durationsList[i] <- strsplit(as.character(melodiesTable$Duration[[i]]), "[-]")
   }
   
    # #Analysing melodies using simple graph
@@ -50,5 +50,5 @@ main <- function(path) {
 
    calcClusters(melodiesTable, distanceMatrix, eigensList) #Calculating clusters using hierarchical clustering, kmeans and kmedoids methods
 
-   makeGraphs(matricesList) #Creating graphs for each melody
+   # makeGraphs(matricesList) #Creating graphs for each melody
 }
