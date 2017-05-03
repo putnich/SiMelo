@@ -1,23 +1,46 @@
-calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
+calcClusters <- function(melodyNames, authors, data, dataType, method, type=" ") {
   #libraries
-  library(TraMineR)
+  
   library(cluster)
   
   #creating folder for cluster plots
-  if(!(dir.exists("clusterPlots"))) {
-    dir.create("clusterPlots")
+  if(!(dir.exists("data/plots/clusterPlots"))) {
+    dir.create("data/plots/clusterPlots")
   }
   else {
-    unlink("clusterPlots",recursive = T)
-    dir.create("clusterPlots")
+    unlink("data/plots/clusterPlots",recursive = T)
+    dir.create("data/plots/clusterPlots")
+  }
+  clusterData <- matrix()
+  if(dataType == "eigen") clusterData <- dist(do.call(rbind, data))
+  if(dataType == "cosine") clusterData <- dist(t(data))
+  if(dataType == "string") clusterData <- as.dist(data)
+  
+  if(method == "hierarchical") {
+    hierarchicalClustering(melodyNames, authors, clusterData, type)
   }
   
+  if(method == "k-means") {
+    kmeansClustering(melodyNames, authors, clusterData)
+  }
+
+  if(method == "k-medoids") {
+    kmedoidsClustering(melodyNames, authors, clusterData)
+  }
+  
+}
+
+hierarchicalClustering <- function(colNames, author, clusterData, type) {
   #Hierarchical clustering
+  
+  print("-----------------------------------------------------------")
+  print("Hierarchical clustering:")
+  print("-----------------------------------------------------------")
   colNames <- melodiesTable$Melody.name
   author <- melodiesTable$Author
-  jpeg("clusterPlots/dendrogram.jpg", width=1000, height=1000, unit='px')
-  dendrogram <- hclust(dist(do.call(rbind, eigensList)), method="ward.D") #dendrogram for eigenvalues
-  plot(dendrogram, labels = rownames(distanceMatrix))
+  jpeg(paste("data/plots/clusterPlots/dendrogram-", type, ".jpg", sep=""), width=1000, height=1000, unit='px')
+  dendrogram <- hclust(clusterData, method="ward.D") #dendrogram for eigenvalues
+  plot(dendrogram, labels = rownames(colNames))
   dev.off()
   # clusterCut <- cutree(dendrogram, 3) #dendrogram cut - see dendrogram.jpg for cut number
   # jpeg("clusterPlots/dendrogramCut.jpg", width=1000, height=1000, unit='px')
@@ -31,12 +54,19 @@ calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
   # print("Hierarchical clustering")
   # print("-----------------------------------------------------------")
   # print(as.data.frame(list("Melody number" = colNames, "Author" = author, "Predicted cluster number" = cH)))
+  
+}
 
+kmeansClustering <- function(colNames, author, clusterData) {
   #K-means clustering for different k
+  
+  print("-----------------------------------------------------------")
+  print("K-means:")
+  print("-----------------------------------------------------------")
   kmeansss <- list()
-  for(k in 1:10) {
+  for(k in 2:6) {
     set.seed(5)
-    km <- kmeans(do.call(rbind, eigensList), k)
+    km <- kmeans(clusterData, k)
     cKm <- km$cluster
     len <- length(colNames)
     print("-----------------------------------------------------------")
@@ -48,9 +78,15 @@ calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
     print(paste("Total within-cluster sum of squares: ", km$tot.withinss, sep=""))
     print(paste("The ratio of between-cluster sum of squares and total sum of squares: ", km$betweenss/km$totss, sep=""))
   }
-  plot(1:10, unlist(kmeansss), type="b") #Elbow method
-  
+  plot(2:6, unlist(kmeansss), type="b") #Elbow method
+}
+
+kmedoidsClustering <- function(colNames, author, clusterData) {
   #Kmedoids clustering for different k, with silhouette info
+  
+  print("-----------------------------------------------------------")
+  print("K-medoids:")
+  print("-----------------------------------------------------------")
   kmedoidssw <- list()
   for(k in 2:6) {
     print("-----------------------------------------------------------")
@@ -58,7 +94,7 @@ calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
     print(paste("Number of clusters ", k, sep=""))
     print("-----------------------------------------------------------")
     set.seed(5)
-    mCluster <- pam(do.call(rbind, eigensList), k)
+    mCluster <- pam(clusterData, k)
     cM <- mCluster$clustering
     plot(mCluster)
     print("Medoids:")
@@ -72,55 +108,6 @@ calcClusters <- function(melodiesTable, distanceMatrix, eigensList) {
     print(as.data.frame(list("Melody number" = colNames, "Author" = author, "Predicted cluster number" = cM)))
   }
   plot(2:6, unlist(kmedoidssw), type="b") #Plotting average silhouette widths per number of clusters
-  
-  #TraMineR
-  #Matching with OM method
-  seq <- seqdef(melodiesTable,3)
-  ccost <- seqsubm(seq, method = "CONSTANT")
-  sd <- seqdist(seq, method="OM", sm=ccost)
-  rownames(sd) <- melodiesTable$Melody.name
-  colnames(sd) <- melodiesTable$Melody.name
-  cl <- agnes(sd, diss=T, method="ward")
-  jpeg("clusterPlots/dendrogramForTraMineR-OM.jpg", width=1000, height=1000, unit='px')
-  plot(cl)
-  dev.off()
-  #Matching with LCP method
-  seq <- seqdef(melodiesTable,3)
-  ccost <- seqsubm(seq, method = "CONSTANT")
-  sd <- seqdist(seq, method="LCP", sm=ccost)
-  rownames(sd) <- melodiesTable$Melody.name
-  colnames(sd) <- melodiesTable$Melody.name
-  cl <- agnes(sd, diss=T, method="ward")
-  jpeg("clusterPlots/dendrogramForTraMineR-LCP.jpg", width=1000, height=1000, unit='px')
-  plot(cl)
-  dev.off()
-  #Matching with RLCP method
-  seq <- seqdef(melodiesTable,3)
-  ccost <- seqsubm(seq, method = "CONSTANT")
-  sd <- seqdist(seq, method="RLCP", sm=ccost)
-  rownames(sd) <- melodiesTable$Melody.name
-  colnames(sd) <- melodiesTable$Melody.name
-  cl <- agnes(sd, diss=T, method="ward")
-  jpeg("clusterPlots/dendrogramForTraMineR-RLCP.jpg", width=1000, height=1000, unit='px')
-  plot(cl)
-  dev.off()
-  #Matching with LCS method
-  seq <- seqdef(melodiesTable,3)
-  ccost <- seqsubm(seq, method = "CONSTANT")
-  sd <- seqdist(seq, method="LCS", sm=ccost)
-  rownames(sd) <- melodiesTable$Melody.name
-  colnames(sd) <- melodiesTable$Melody.name
-  cl <- agnes(sd, diss=T, method="ward")
-  jpeg("clusterPlots/dendrogramForTraMineR-LCS.jpg", width=1000, height=1000, unit='px')
-  plot(cl)
-  dev.off()
 }
-
-
-
-
-
-
-
 
 
