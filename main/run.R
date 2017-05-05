@@ -1,9 +1,7 @@
 run <- function() {
   source(paste(getwd(), "/main/run.R", sep=""))
   source(paste(getwd(), "/utils/similarity/eigenSimilarity.R", sep=""))
-  source(paste(getwd(), "/utils/similarity/levensteinSimilarity.R", sep=""))
-  source(paste(getwd(), "/utils/similarity/cosineSimilarity.R", sep=""))
-  source(paste(getwd(), "/utils/similarity/traminer.R", sep=""))
+  source(paste(getwd(), "/utils/similarity/stringSequenceSimilarity.R", sep=""))
   source(paste(getwd(), "/utils/distance/calcDistances.R", sep=""))
   source(paste(getwd(), "/utils/clusters/calcClusters.R", sep=""))
   source(paste(getwd(), "/utils/graphs/makeGraphs.R", sep=""))
@@ -32,14 +30,19 @@ main <- function() {
   eigenSimilarity(melodiesTable, "duration-average")
 
 
-  #Discrete sequence similarity analysis using TraMineR package
-  traminer(melodiesTable)
-
-
   #Analysing melodies using Levenshtein distance
-  levensteinSimilarity(melodiesTableStrings)
+  stringSequenceSimilarity(melodiesTableStrings, "levenstein")
   
   #Analysing melodies using cosine similarity
-  cosineSimilarity(melodiesTableStrings)
+  stringSequenceSimilarity(melodiesTableStrings, "cosine")
+  
+  #Analysing melodies using longest common subsequence method
+  stringSequenceSimilarity(melodiesTableStrings, "LCS")
+  
+  #Analysing melodies using optimal matching method
+  stringSequenceSimilarity(melodiesTableStrings, "OM")
+  
+  #Analysing melodies using qgrams
+  stringSequenceSimilarity(melodiesTableStrings, "qgrams")
   
 }

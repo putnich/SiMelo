@@ -1,23 +1,21 @@
-calcClusters <- function(melodyNames, authors, data, dataType, method, type=" ") {
+calcClusters <- function(melodyNames, authors, data, dataType, method) {
   #libraries
   
   library(cluster)
   
   #creating folder for cluster plots
-  if(!(dir.exists("data/plots/clusterPlots"))) {
-    dir.create("data/plots/clusterPlots")
+  if(!(dir.exists("data/plots/"))) {
+    dir.create("data/plots/")
   }
-  else {
-    unlink("data/plots/clusterPlots",recursive = T)
-    dir.create("data/plots/clusterPlots")
-  }
+  
   clusterData <- matrix()
   if(dataType == "eigen") clusterData <- dist(do.call(rbind, data))
   if(dataType == "cosine") clusterData <- dist(t(data))
   if(dataType == "string") clusterData <- as.dist(data)
+  if(dataType == "qgramsMatrix") clusterData <- dist(data)
   
   if(method == "hierarchical") {
-    hierarchicalClustering(melodyNames, authors, clusterData, type)
+    hierarchicalClustering(melodyNames, authors, clusterData)
   }
   
   if(method == "k-means") {
@@ -30,16 +28,14 @@ calcClusters <- function(melodyNames, authors, data, dataType, method, type=" ")
   
 }
 
-hierarchicalClustering <- function(colNames, author, clusterData, type) {
+hierarchicalClustering <- function(colNames, author, clusterData) {
   #Hierarchical clustering
   
   print("-----------------------------------------------------------")
   print("Hierarchical clustering:")
   print("-----------------------------------------------------------")
-  colNames <- melodiesTable$Melody.name
-  author <- melodiesTable$Author
-  jpeg(paste("data/plots/clusterPlots/dendrogram-", type, ".jpg", sep=""), width=1000, height=1000, unit='px')
-  dendrogram <- hclust(clusterData, method="ward.D") #dendrogram for eigenvalues
+  jpeg("data/plots/dendrogram.jpg", width=1000, height=1000, unit='px')
+  dendrogram <- hclust(clusterData, method="ward.D") #dendrogram for given data
   plot(dendrogram, labels = rownames(colNames))
   dev.off()
   # clusterCut <- cutree(dendrogram, 3) #dendrogram cut - see dendrogram.jpg for cut number
