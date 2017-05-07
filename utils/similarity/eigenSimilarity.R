@@ -14,11 +14,7 @@ eigenSimilarity <- function(melodiesTable, type) {
   print(matricesList)
   
   eigensList <- list()
-  if(all(isMarkov(matricesList)) == T) {
-    print("All directed graphs are strongly connected, switching to finite Markov chain (Perron-Frobenius theorem)")
-    eigensList <- calcEigens(matricesList, "markov", melodiesTable) #Calculating eigenvalues from matrices
-  }
-  else eigensList <- calcEigens(matricesList, "basic", melodiesTable) #Calculating eigenvalues from matrices
+  eigensList <- calcEigens(matricesList, melodiesTable) #Calculating eigenvalues from matrices
   
   print("-----------------------------------------------------------")
   print("Matrices spectra, respectively")
@@ -41,11 +37,11 @@ eigenSimilarity <- function(melodiesTable, type) {
   print("Cluster analysis:")
   print("-----------------------------------------------------------")
   calcClusters(melodiesNames, authors, distanceMatrix, paste("eigen", type, sep="-"), "hierarchical")
-  # calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-means")
-  # calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-medoids")
+  calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-means")
+  calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-medoids")
   
   
-  # makeGraphs(matricesList) #Creating graphs for each melody
+  makeGraphs(matricesList, type) #Creating graphs for each melody
 }
 
 makeMatrices <- function(melodiesList, durationsList, type) {
@@ -83,37 +79,13 @@ makeMatrices <- function(melodiesList, durationsList, type) {
   matricesList
 }
 
-isMarkov <- function(matricesList) {
-  library(igraph)
-  
-  #Plotting melody graph for each melody
-  len <- length(matricesList)
-  stronglyConnected <- c()
-  for(i in 1:len) {
-    g <- graph_from_adjacency_matrix(matricesList[[i]], mode="directed")
-    stronglyConnected[i] <- is.connected(g, mode = "strong")
-  }
-  
-  stronglyConnected
-}
-
-calcEigens <- function(matricesList, model, melodiesTable) {
+calcEigens <- function(matricesList, melodiesTable) {
   eigensList <- list()
-  if(model == "markov") {
-    # d <- diag(degree(matricesList[[i]]))
-    # p <- t(d)%*%matricesList[[i]] #Transition matrix - Markov matrix
-    # phi <- solve(p - diag(ncol(p)), c(rep(0, ncol(p))))
-    # g <-sqrt(phi) %*% (diag(ncol(p)) - p) %*% (1/sqrt(phi))
-    # eigensList[i] <- eigen(g)
+  len <- length(matricesList)
+  for(i in 1:len) {
+    e <- eigen(matricesList[[i]]%*%t(matricesList[[i]])) #Calculating eigenvalues for A*A' matrix
+    eigensList[[i]] <- e$values
   }
-  else {
-    len <- length(matricesList)
-    for(i in 1:len) {
-      e <- eigen(matricesList[[i]]%*%t(matricesList[[i]])) #Calculating eigenvalues for A*A' matrix
-      eigensList[[i]] <- e$values
-    }
-  }
-  
   
   eigensList
   

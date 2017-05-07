@@ -4,8 +4,8 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
   library(cluster)
   
   #creating folder for cluster plots
-  if(!(dir.exists("data/plots/"))) {
-    dir.create("data/plots/")
+  if(!(dir.exists("data/plots/dendrograms"))) {
+    dir.create("data/plots/dendrograms")
   }
   
   clusterData <- matrix()
@@ -33,7 +33,7 @@ hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
   print("-----------------------------------------------------------")
   print("Hierarchical clustering:")
   print("-----------------------------------------------------------")
-  jpeg(paste("data/plots/dendrogram-", dataType, ".jpg", sep=""), width=1000, height=1000, unit='px')
+  jpeg(paste("data/plots/dendrograms/dendrogram-", dataType, ".jpg", sep=""), width=1000, height=1000, unit='px')
   dendrogram <- hclust(clusterData, method="ward.D") #dendrogram for given data
   plot(dendrogram, labels = rownames(colNames))
   dev.off()

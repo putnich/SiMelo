@@ -13,7 +13,7 @@ calcDistances <- function(melodies, melodiesNames, authors, eigensList, docTermM
   if(method == "LCS") {
     sequences <- seqdef(melodies)
     ccost <- seqsubm(sequences, method = "CONSTANT")
-    m <- seqdist(seq, method, sm=ccost, norm=T)
+    m <- seqdist(sequences, method, sm=ccost, norm=T)
     distanceMatrix <- matrix(m, ncol=ncol(m), nrow=nrow(m), dimnames=list(paste(melodiesNames, authors, sep=" : "), paste(melodiesNames, authors, sep=" : ")))
   }
   
@@ -21,7 +21,7 @@ calcDistances <- function(melodies, melodiesNames, authors, eigensList, docTermM
     if(method == "OM") {
       sequences <- seqdef(melodies)
       ccost <- seqsubm(sequences, method = "CONSTANT")
-      m <- seqdist(seq, method, sm=ccost, norm=T)
+      m <- seqdist(sequences, method, sm=ccost, norm=T)
       distanceMatrix <- matrix(m, ncol=ncol(m), nrow=nrow(m), dimnames=list(paste(melodiesNames, authors, sep=" : "), paste(melodiesNames, authors, sep=" : ")))
     }
     else {
