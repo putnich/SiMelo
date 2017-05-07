@@ -5,6 +5,14 @@ makeGraphs <- function(matricesList, type) {
   library(igraph)
   
   #Creating directories for graph plots
+  if(!(dir.exists("data/plots/graphPlots/"))) {
+    dir.create("data/plots/graphPlots/")
+  }
+  else {
+    unlink("data/plots/graphPlots/",recursive = T)
+    dir.create("data/plots/graphPlots/")
+  }
+  
   if(!(dir.exists(paste("data/plots/graphPlots/", type, sep="")))) {
     dir.create(paste("data/plots/graphPlots/", type, sep=""))
   }

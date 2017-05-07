@@ -4,8 +4,11 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
   library(cluster)
   
   #creating folder for cluster plots
-  if(!(dir.exists("data/plots/dendrograms"))) {
-    dir.create("data/plots/dendrograms")
+  if(!(dir.exists("data/plots/"))) {
+    dir.create("data/plots/")
+  }
+  if(!(dir.exists("data/plots/dendrograms/"))) {
+    dir.create("data/plots/dendrograms/")
   }
   
   clusterData <- matrix()
