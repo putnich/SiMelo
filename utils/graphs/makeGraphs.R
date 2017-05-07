@@ -1,26 +1,25 @@
-makeGraphs <- function(matricesList) {
+makeGraphs <- function(matricesList, type) {
   
   #libraries
   require(scales)
   library(igraph)
   
   #Creating directories for graph plots
-  if(!(dir.exists("graphPlots"))) {
-    dir.create("graphPlots")
+  if(!(dir.exists(paste("data/plots/graphPlots/", type, sep="")))) {
+    dir.create(paste("data/plots/graphPlots/", type, sep=""))
   }
   else {
-    unlink("graphPlots",recursive = T)
-    dir.create("graphPlots")
+    unlink(paste("data/plots/graphPlots/", type, sep=""),recursive = T)
+    dir.create(paste("data/plots/graphPlots/", type, sep=""))
   }
   
   #Plotting melody graph for each melody
   len <- length(matricesList)
-  stronglyConnected <- c()
   graphs <- list()
   for(i in 1:len) {
     degrees <- colSums(matricesList[[i]])
     g <- graph_from_adjacency_matrix(matricesList[[i]], mode="undirected")
-    jpeg(paste("graphPlots/gplot", i, ".jpg", sep=""), width=4000, height=3000, unit='px')
+    jpeg(paste(paste("data/plots/graphPlots/", type, sep=""), "/gplot", i, ".jpg", sep=""), width=4000, height=3000, unit='px')
     V(g)$color <- sample(rainbow(12),12,replace=FALSE)
     V(g)$label.color = "black"
     V(g)$label.cex <- rescale(degrees, to = c(15,25))
@@ -28,12 +27,7 @@ makeGraphs <- function(matricesList) {
     E(g)$color <- alpha("gray", rescale(
       degrees, to = c(0.3, 1)))
     plot(g, vertex.size=rescale(degrees, to = c(15,25)),  layout=layout.fruchterman.reingold(g, niter=10000))
-    stronglyConnected[i] <- is.connected(g, mode = "strong")
     dev.off()
   }
   
-  if(all(stronglyConnected) == T) {
-    print("All directed graphs are strongly connected, switching to finite Markov chain (Perron-Frobenius theorem)")
-    #further procedure to be implemented
-  }
 }
