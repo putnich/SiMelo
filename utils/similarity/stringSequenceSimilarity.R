@@ -1,18 +1,23 @@
 stringSequenceSimilarity <- function(melodiesTable, method, q=1) {
-  table <- melodiesTable
-  if(method == "LCS") LCSSimilarity(table)
+
+  library(stringr)
+  library(stringdist)
   
-  if(method == "OM")   OMSimilarity(melodiesTable)
+  if(method == "LCS") LCSSimilarity(melodiesTable, method)
   
-  if(method == "levenstein") levensteinSimilarity(melodiesTable)
+  if(method == "OM")   OMSimilarity(melodiesTable, method)
   
-  if(method == "cosine") cosineSimilarity(melodiesTable)
+  if(method == "levenstein") levensteinSimilarity(melodiesTable, method)
   
-  if(method == "qgrams") qgramsSimilarity(melodiesTable, q)
+  if(method == "cosine") cosineSimilarity(melodiesTable, method)
+  
+  if(method == "qgrams") qgramsSimilarity(melodiesTable, q, method)
+  
+  if(method == "jaccard") jaccardSimilarity(melodiesTable, method)
   
 }
 
-levensteinSimilarity <- function(melodiesTableStrings) {
+levensteinSimilarity <- function(melodiesTableStrings, method) {
   len <- length(melodiesTableStrings$Melody)
   
   melodies <- melodiesTableStrings$Melody
@@ -21,13 +26,13 @@ levensteinSimilarity <- function(melodiesTableStrings) {
   
   distanceMatrix <- calcDistances(melodies, melodiesNames, authors, NULL, NULL)
   
-  calcClusters(melodiesNames, authors, distanceMatrix, "string", "hierarchical")
+  calcClusters(melodiesNames, authors, distanceMatrix, paste("string", method, sep="-"), "hierarchical")
   # calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-means")
-  calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-medoids")
+  # calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-medoids")
   
 }
 
-cosineSimilarity <- function(melodiesTable) {
+cosineSimilarity <- function(melodiesTable, method) {
   library('lsa')
   melodiesList <- list()
   len <- length(melodiesTable$Melody)
@@ -50,38 +55,38 @@ cosineSimilarity <- function(melodiesTable) {
   calcDistances(NULL, melodiesNames, authors,NULL,t(docTermMatrix))
   
   #Hierarchical clustering
-  calcClusters(melodiesNames, authors, docTermMatrix, "cosine", "hierarchical")
+  calcClusters(melodiesNames, authors, docTermMatrix, paste("cosine", method, sep="-"), "hierarchical")
   
   #K-means clustering
   # calcClusters(melodiesNames, authors, docTermMatrix, "cosine", "k-means")
   
   #K-medoids clustering
-  calcClusters(melodiesNames, authors, docTermMatrix, "cosine", "k-medoids")
+  # calcClusters(melodiesNames, authors, docTermMatrix, "cosine", "k-medoids")
   
 }
 
-LCSSimilarity <- function(melodiesTable) {
+LCSSimilarity <- function(melodiesTable, method) {
   melodies <- melodiesTable$Melody
   melodiesNames <- melodiesTable$Melody.name
   authors <- melodiesTable$Author
   distanceMatrix <- calcDistances(melodies, melodiesNames, authors, NULL, NULL, method = "LCS")
-  calcClusters(melodiesNames, authors, distanceMatrix, "string", "hierarchical")
-  calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-means")
-  calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-medoids")
+  calcClusters(melodiesNames, authors, distanceMatrix, paste("string", method, sep="-"), "hierarchical")
+  # calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-means")
+  # calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-medoids")
 }
 
-OMSimilarity <- function(melodiesTable) {
+OMSimilarity <- function(melodiesTable, method) {
   melodies <- melodiesTable$Melody
   melodiesNames <- melodiesTable$Melody.name
   authors <- melodiesTable$Author
   distanceMatrix <- calcDistances(melodies, melodiesNames, authors, NULL, NULL, method = "OM")
   
-  calcClusters(melodiesNames, authors, distanceMatrix, "string", "hierarchical")
-  calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-means")
-  calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-medoids")
+  calcClusters(melodiesNames, authors, distanceMatrix, paste("string", method, sep="-"), "hierarchical")
+  # calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-means")
+  # calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-medoids")
 }
 
-qgramsSimilarity <- function(melodiesTable, a) {
+qgramsSimilarity <- function(melodiesTable, a, method) {
   melodies <- melodiesTable$Melody
   melodiesNames <- melodiesTable$Melody.name
   authors <- melodiesTable$Author
@@ -90,7 +95,19 @@ qgramsSimilarity <- function(melodiesTable, a) {
                         melodies[[8]], melodies[[9]], melodies[[10]], melodies[[11]], melodies[[12]], melodies[[13]], melodies[[14]], 
                         melodies[[15]], melodies[[16]], melodies[[17]], melodies[[18]], q=a)
   rownames(clusterData) <- melodiesNames
-  calcClusters(melodiesNames, authors, clusterData, "qgramsMatrix", "hierarchical")
-  calcClusters(melodiesNames, authors, clusterData, "qgramsMatrix", "k-means")
-  calcClusters(melodiesNames, authors, clusterData, "qgramsMatrix", "k-medoids")
+  calcClusters(melodiesNames, authors, clusterData, paste("qgramsMatrix", method, sep="-"), "hierarchical")
+  # calcClusters(melodiesNames, authors, clusterData, "qgramsMatrix", "k-means")
+  # calcClusters(melodiesNames, authors, clusterData, "qgramsMatrix", "k-medoids")
+}
+
+jaccardSimilarity <- function(melodiesTable, method) {
+  melodies <- melodiesTable$Melody
+  melodiesNames <- melodiesTable$Melody.name
+  authors <- melodiesTable$Author
+  melodiesRepl <- lapply(melodiesTable$Melody, str_replace_all, pattern="-", replacement = "")
+  print(melodies)
+  distanceMatrix <- calcDistances(melodiesRepl, melodiesNames, authors, NULL, NULL, method = "jaccard")
+  calcClusters(melodiesNames, authors, distanceMatrix, paste("string", method, sep="-"), "hierarchical")
+  # calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-means")
+  # calcClusters(melodiesNames, authors, distanceMatrix, "string", "k-medoids")
 }

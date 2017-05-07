@@ -45,4 +45,7 @@ main <- function() {
   #Analysing melodies using qgrams
   stringSequenceSimilarity(melodiesTableStrings, "qgrams")
   
+  #Analysing melodies using Jaccard coefficient
+  stringSequenceSimilarity(melodiesTableStrings, "jaccard")
+  
 }

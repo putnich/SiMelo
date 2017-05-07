@@ -9,13 +9,12 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
   }
   
   clusterData <- matrix()
-  if(dataType == "eigen") clusterData <- dist(do.call(rbind, data))
-  if(dataType == "cosine") clusterData <- dist(t(data))
-  if(dataType == "string") clusterData <- as.dist(data)
-  if(dataType == "qgramsMatrix") clusterData <- dist(data)
+  if(startsWith(dataType, "qgramsMatrix")) clusterData <- dist(data)
+  if(startsWith(dataType, "cosine")) clusterData <- dist(t(data))
+  if(startsWith(dataType,"string")|| startsWith(dataType, "eigen") ) clusterData <- as.dist(data)
   
   if(method == "hierarchical") {
-    hierarchicalClustering(melodyNames, authors, clusterData)
+    hierarchicalClustering(melodyNames, authors, clusterData, dataType)
   }
   
   if(method == "k-means") {
@@ -28,13 +27,13 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
   
 }
 
-hierarchicalClustering <- function(colNames, author, clusterData) {
+hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
   #Hierarchical clustering
   
   print("-----------------------------------------------------------")
   print("Hierarchical clustering:")
   print("-----------------------------------------------------------")
-  jpeg("data/plots/dendrogram.jpg", width=1000, height=1000, unit='px')
+  jpeg(paste("data/plots/dendrogram-", dataType, ".jpg", sep=""), width=1000, height=1000, unit='px')
   dendrogram <- hclust(clusterData, method="ward.D") #dendrogram for given data
   plot(dendrogram, labels = rownames(colNames))
   dev.off()

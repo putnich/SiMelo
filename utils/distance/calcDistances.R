@@ -8,13 +8,13 @@ calcDistances <- function(melodies, melodiesNames, authors, eigensList, docTermM
   #creating distance matrix
   len <- length(melodiesNames)
   
-  distanceMatrix <- matrix(rep(0, len*len), ncol = len, nrow = len, dimnames = list(melodiesNames, melodiesNames))
+  distanceMatrix <- matrix(rep(0, len*len), ncol = len, nrow = len, dimnames = list(paste(melodiesNames, authors, sep=" : ") , paste(melodiesNames, authors, sep=" : ")))
   
   if(method == "LCS") {
     sequences <- seqdef(melodies)
     ccost <- seqsubm(sequences, method = "CONSTANT")
     m <- seqdist(seq, method, sm=ccost, norm=T)
-    distanceMatrix <- matrix(m, ncol=ncol(m), nrow=nrow(m), dimnames=list(melodiesNames, melodiesNames))
+    distanceMatrix <- matrix(m, ncol=ncol(m), nrow=nrow(m), dimnames=list(paste(melodiesNames, authors, sep=" : "), paste(melodiesNames, authors, sep=" : ")))
   }
   
   else {
@@ -22,14 +22,15 @@ calcDistances <- function(melodies, melodiesNames, authors, eigensList, docTermM
       sequences <- seqdef(melodies)
       ccost <- seqsubm(sequences, method = "CONSTANT")
       m <- seqdist(seq, method, sm=ccost, norm=T)
-      distanceMatrix <- matrix(m, ncol=ncol(m), nrow=nrow(m), dimnames=list(melodiesNames, melodiesNames))
+      distanceMatrix <- matrix(m, ncol=ncol(m), nrow=nrow(m), dimnames=list(paste(melodiesNames, authors, sep=" : "), paste(melodiesNames, authors, sep=" : ")))
     }
     else {
       for(i in 1:len) {
         for(j in 1:len) {
           if(is.null(docTermMatrix)) {
             if(is.null(eigensList)) {
-              d <- distanceMatrix[i,j] <- distanceMatrix[j,i] <- adist(melodies[i], melodies[j]) #Levenstein edit distance
+              if(method == "jaccard") d <- distanceMatrix[i,j] <- distanceMatrix[j,i] <- stringdist(melodies[[i]], melodies[[j]], method)
+              else d <- distanceMatrix[i,j] <- distanceMatrix[j,i] <- adist(melodies[i], melodies[j]) #Levenstein edit distance
             }
             else d <- distanceMatrix[i,j] <- distanceMatrix[j,i] <- dist(rbind(eigensList[[i]], eigensList[[j]]))
           } 
