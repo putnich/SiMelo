@@ -1,26 +1,37 @@
-calcDistances <- function(melodies, melodiesNames, authors, eigensList, docTermMatrix, method = " ") {
+calcDistances <- function(melodies, melodiesNames, authors, eigensList, docTermMatrix, method = "") {
   
-  #libraries
+  #Libraries
   library(qgraph)
   library(igraph)
   library(TraMineR)
   
-  #creating distance matrix
+  #Creating distance matrix
   len <- length(melodiesNames)
   
   distanceMatrix <- matrix(rep(0, len*len), ncol = len, nrow = len, dimnames = list(paste(melodiesNames, authors, sep=" : ") , paste(melodiesNames, authors, sep=" : ")))
   
   if(method == "LCS") {
+    #Defining melodies as sequences
     sequences <- seqdef(melodies)
+    
+    #Creating substitution cost matrix
     ccost <- seqsubm(sequences, method = "CONSTANT")
+    
+    #Creating distance matrix by using sequences and tranformation costs
     m <- seqdist(sequences, method, sm=ccost, norm=T)
     distanceMatrix <- matrix(m, ncol=ncol(m), nrow=nrow(m), dimnames=list(paste(melodiesNames, authors, sep=" : "), paste(melodiesNames, authors, sep=" : ")))
   }
   
   else {
     if(method == "OM") {
+      
+      #Defining melodies as sequences
       sequences <- seqdef(melodies)
+      
+      #Creating substitution cost matrix
       ccost <- seqsubm(sequences, method = "CONSTANT")
+      
+      #Creating distance matrix by using sequences and tranformation costs
       m <- seqdist(sequences, method, sm=ccost, norm=T)
       distanceMatrix <- matrix(m, ncol=ncol(m), nrow=nrow(m), dimnames=list(paste(melodiesNames, authors, sep=" : "), paste(melodiesNames, authors, sep=" : ")))
     }
@@ -32,8 +43,10 @@ calcDistances <- function(melodies, melodiesNames, authors, eigensList, docTermM
               if(method == "jaccard") d <- distanceMatrix[i,j] <- distanceMatrix[j,i] <- stringdist(melodies[[i]], melodies[[j]], method)
               else d <- distanceMatrix[i,j] <- distanceMatrix[j,i] <- adist(melodies[i], melodies[j]) #Levenstein edit distance
             }
+            #If eigen vectors list exists, then the Euclidean distance between eigen vectors in calculated
             else d <- distanceMatrix[i,j] <- distanceMatrix[j,i] <- dist(rbind(eigensList[[i]], eigensList[[j]]))
-          } 
+          }
+          #If document-term matrix exists, then the cosine distance is used
           else  d <- distanceMatrix[i,j] <- distanceMatrix[j,i] <- lsa::cosine(docTermMatrix[i,], docTermMatrix[j,]) #cosine distance
           
           distanceMatrix[i,i] <- 0
@@ -48,31 +61,6 @@ calcDistances <- function(melodies, melodiesNames, authors, eigensList, docTermM
       
     }
   }
-  
-  
-  # #creating folder for distance plots
-  # if(!(dir.exists("distancePlots"))) {
-  #   dir.create("distancePlots")
-  # }
-  # else {
-  #   unlink("distancePlots",recursive = T)
-  #   dir.create("distancePlots")
-  # }
-  # 
-  # 
-  # jpeg("distancePlots/distanceGraph1.jpg", width=5000, height=5000, unit='px') #plotting distance matrix graph using qgraph
-  # qgraph(distanceMatrix, layout="spring", vsize=3)
-  # dev.off()
-  # 
-  # 
-  # jpeg("distancePlots/distanceGraph2.jpg", width=3000, height=3000, unit='px') #ploting distance matrix graph using igraph with edge thickness equal to distance between nodes
-  # g <- graph_from_adjacency_matrix(distanceMatrix, mode="undirected", weighted = T)
-  # V(g)$label <- abbreviate(melodies, 4)
-  # V(g)$label.cex <- 5
-  # plot(g, edge.width=E(g)$weight)
-  # dev.off()
-  # 
-  # calcMetrics(g) #calculating graph metrics for graph from distance matrix
   
   distanceMatrix
 }

@@ -1,13 +1,18 @@
 eigenSimilarity <- function(melodiesTable, type) {
+  
   len <- length(melodiesTable$Melody.name)
+  
   melodiesList <- list()
   durationsList <- list()
+  
   for(i in 1:len) {
     melodiesList[i] <- strsplit(as.character(melodiesTable$Melody[[i]]), "[-]")
     durationsList[i] <- strsplit(as.character(melodiesTable$Duration[[i]]), "[-]")
   }
+  
   matricesList <- list()
   matricesList <- makeMatrices(melodiesList, durationsList, type) #Creating adjacency matrices from musical notes sequence
+  
   print("-----------------------------------------------------------")
   print("Adjacency matrices (A) for melodies, respectively:")
   print("-----------------------------------------------------------")
@@ -20,8 +25,6 @@ eigenSimilarity <- function(melodiesTable, type) {
   print("Matrices spectra, respectively")
   print("-----------------------------------------------------------")
   print(eigensList)
-  
-  
   
   print("-----------------------------------------------------------")
   print("Euclidean distances, respectively:")
@@ -36,12 +39,18 @@ eigenSimilarity <- function(melodiesTable, type) {
   print("-----------------------------------------------------------")
   print("Cluster analysis:")
   print("-----------------------------------------------------------")
+  
+  #Hierarchical clustering
   calcClusters(melodiesNames, authors, distanceMatrix, paste("eigen", type, sep="-"), "hierarchical")
+  
+  #K-means clustering
   calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-means")
+  
+  #K-medoids clustering
   calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-medoids")
   
-  
-  makeGraphs(matricesList, type) #Creating graphs for each melody
+  #Generating graph for melodies
+  makeGraphs(melodiesNames, matricesList, type) #Creating graphs for each melody
 }
 
 makeMatrices <- function(melodiesList, durationsList, type) {
@@ -73,20 +82,23 @@ makeMatrices <- function(melodiesList, durationsList, type) {
       } 
       
     }
-    # print(n)
+    
     matricesList[[i]] <- m
   }
+  
   matricesList
 }
 
 calcEigens <- function(matricesList, melodiesTable) {
+  
   eigensList <- list()
+  
   len <- length(matricesList)
+  
   for(i in 1:len) {
     e <- eigen(matricesList[[i]]%*%t(matricesList[[i]])) #Calculating eigenvalues for A*A' matrix
     eigensList[[i]] <- e$values
   }
   
   eigensList
-  
 }

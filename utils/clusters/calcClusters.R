@@ -1,6 +1,6 @@
 calcClusters <- function(melodyNames, authors, data, dataType, method) {
-  #libraries
   
+  #libraries
   library(cluster)
   
   #creating folder for cluster plots
@@ -12,18 +12,20 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
   }
   
   clusterData <- matrix()
-  if(startsWith(dataType, "qgramsMatrix")) clusterData <- dist(data)
-  if(startsWith(dataType, "cosine")) clusterData <- dist(t(data))
-  if(startsWith(dataType,"string")|| startsWith(dataType, "eigen") ) clusterData <- as.dist(data)
+  if(startsWith(dataType, "qgramsMatrix")) clusterData <- dist(data) #Input is document-term matrix
+  else clusterData <- as.dist(data) #Input is distance matrix
   
+  #Hierarchical clustering
   if(method == "hierarchical") {
     hierarchicalClustering(melodyNames, authors, clusterData, dataType)
   }
   
+  #K-means clustering
   if(method == "k-means") {
     kmeansClustering(melodyNames, authors, clusterData)
   }
 
+  #K-medoids clustering
   if(method == "k-medoids") {
     kmedoidsClustering(melodyNames, authors, clusterData)
   }
@@ -31,81 +33,81 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
 }
 
 hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
-  #Hierarchical clustering
   
   print("-----------------------------------------------------------")
   print("Hierarchical clustering:")
   print("-----------------------------------------------------------")
+  
+  #Writing dendrogram to the file
   jpeg(paste("data/plots/dendrograms/dendrogram-", dataType, ".jpg", sep=""), width=1000, height=1000, unit='px')
-  dendrogram <- hclust(clusterData, method="ward.D") #dendrogram for given data
+  dendrogram <- hclust(clusterData, method="ward.D") #Ward method is used
   plot(dendrogram, labels = rownames(colNames))
   dev.off()
-  # clusterCut <- cutree(dendrogram, 3) #dendrogram cut - see dendrogram.jpg for cut number
-  # jpeg("clusterPlots/dendrogramCut.jpg", width=1000, height=1000, unit='px')
-  # plot(clusterCut, xaxn="n")
-  # axis(1, at=melodiesTable$Melody.name, labels=abbreviate(melodiesTable$Melody.name, 4), las=2) #matching labels to abbreviated melodies' names
-  # dev.off()
-  # cH <- vector()
-  # len <- length(clusterCut)
-  # for(i in 1:len) cH[i] <- clusterCut[i][[1]] #accessing predicted cluster numbers
-  # print("-----------------------------------------------------------")
-  # print("Hierarchical clustering")
-  # print("-----------------------------------------------------------")
-  # print(as.data.frame(list("Melody number" = colNames, "Author" = author, "Predicted cluster number" = cH)))
+  
+  #Cluster cut - melodies are divided into groups
+  cut <- readline("What is the cut number for dendrogram? ")
+  clusterCut <- cutree(dendrogram, cut) #Dendrogram cut - see dendrogram.jpg for cut number
+  cH <- vector()
+  len <- length(clusterCut)
+  for(i in 1:len) cH[i] <- clusterCut[i][[1]] #Accessing predicted cluster numbers
+  print("-----------------------------------------------------------")
+  print("Hierarchical clustering")
+  print("-----------------------------------------------------------")
+  print(as.data.frame(list("Melody number" = colNames, "Author" = author, "Predicted cluster number" = cH)))
   
 }
 
 kmeansClustering <- function(colNames, author, clusterData) {
-  #K-means clustering for different k
-  
+ 
+  k <- readline("What is the k for k-means? ")
   print("-----------------------------------------------------------")
   print("K-means:")
   print("-----------------------------------------------------------")
   kmeansss <- list()
-  for(k in 2:6) {
+  for(i in 2:k) {
     set.seed(5)
-    km <- kmeans(clusterData, k)
+    km <- kmeans(clusterData, i)
     cKm <- km$cluster
     len <- length(colNames)
     print("-----------------------------------------------------------")
     print("K-means clustering")
-    print(paste("Number of clusters ", k, sep=""))
+    print(paste("Number of clusters ", i, sep=""))
     print("-----------------------------------------------------------")
     print(as.data.frame(list("Melody number" = colNames, "Author" = author,"Predicted cluster number" = cKm)))
-    kmeansss[k] <- km$tot.withinss
-    print(paste("Total within-cluster sum of squares: ", km$tot.withinss, sep=""))
+    kmeansss[i] <- km$tot.withinss
+    print(paste("Total within-cluster sum of squares: ", kmeansss[i], sep=""))
     print(paste("The ratio of between-cluster sum of squares and total sum of squares: ", km$betweenss/km$totss, sep=""))
   }
-  plot(2:6, unlist(kmeansss), type="b") #Elbow method
+  plot(2:k, unlist(kmeansss), type="b") #Elbow method
 }
 
 kmedoidsClustering <- function(colNames, author, clusterData) {
-  #Kmedoids clustering for different k, with silhouette info
   
+  k <- readline("What is the k for k-medoids? ")
   print("-----------------------------------------------------------")
   print("K-medoids:")
   print("-----------------------------------------------------------")
   kmedoidssw <- list()
-  for(k in 2:6) {
+  for(i in 2:k) {
     print("-----------------------------------------------------------")
     print("K-medoids clustering")
-    print(paste("Number of clusters ", k, sep=""))
+    print(paste("Number of clusters ", i, sep=""))
     print("-----------------------------------------------------------")
     set.seed(5)
-    mCluster <- pam(clusterData, k)
+    mCluster <- pam(clusterData, i)
     cM <- mCluster$clustering
-    plot(mCluster)
+    # plot(mCluster$clustering)
     print("Medoids:")
     print(mCluster$medoids)
     print("Silhouette info:")
-    for(i in 1:length(mCluster$silinfo$clus.avg.widths)) {
-      print(paste("Average silhouette width per cluster ", i, " = [", mCluster$silinfo$clus.avg.widths[[i]], "]", sep=""))
+    for(j in 1:length(mCluster$silinfo$clus.avg.widths)) {
+      print(paste("Average silhouette width per cluster ", j, " = [", mCluster$silinfo$clus.avg.widths[[j]], "]", sep=""))
     }
-    kmedoidssw[k] <- mCluster$silinfo$avg.width
+    kmedoidssw[i] <- mCluster$silinfo$avg.width
     print(paste("Average silhouette width = [",mCluster$silinfo$avg.width, "]", sep=""))
     print(as.data.frame(list("Melody number" = colNames, "Author" = author, "Predicted cluster number" = cM)))
   }
-  plot(2:6, unlist(kmedoidssw), type="b") #Plotting average silhouette widths per number of clusters
+  plot(2:k, unlist(kmedoidssw), type="b") #Plotting average silhouette widths per number of clusters
 }
 
 

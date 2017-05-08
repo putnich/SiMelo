@@ -1,4 +1,4 @@
-makeGraphs <- function(matricesList, type) {
+makeGraphs <- function(melodiesNames, matricesList, type) {
   
   #libraries
   require(scales)
@@ -8,16 +8,8 @@ makeGraphs <- function(matricesList, type) {
   if(!(dir.exists("data/plots/graphPlots/"))) {
     dir.create("data/plots/graphPlots/")
   }
-  else {
-    unlink("data/plots/graphPlots/",recursive = T)
-    dir.create("data/plots/graphPlots/")
-  }
   
   if(!(dir.exists(paste("data/plots/graphPlots/", type, sep="")))) {
-    dir.create(paste("data/plots/graphPlots/", type, sep=""))
-  }
-  else {
-    unlink(paste("data/plots/graphPlots/", type, sep=""),recursive = T)
     dir.create(paste("data/plots/graphPlots/", type, sep=""))
   }
   
@@ -26,15 +18,19 @@ makeGraphs <- function(matricesList, type) {
   graphs <- list()
   for(i in 1:len) {
     degrees <- colSums(matricesList[[i]])
-    g <- graph_from_adjacency_matrix(matricesList[[i]], mode="undirected")
-    jpeg(paste(paste("data/plots/graphPlots/", type, sep=""), "/gplot", i, ".jpg", sep=""), width=4000, height=3000, unit='px')
+    g <- graph_from_adjacency_matrix(matricesList[[i]], mode="directed")
+    jpeg(paste(paste("data/plots/graphPlots/", type, sep=""), "/gplot-", melodiesNames[[i]], ".jpg", sep=""), width=4000, height=3000, unit='px')
     V(g)$color <- sample(rainbow(12),12,replace=FALSE)
     V(g)$label.color = "black"
-    V(g)$label.cex <- rescale(degrees, to = c(15,25))
+    V(g)$label.cex <- rescale(degrees, to = c(10,20))
     E(g)$width <- 4
     E(g)$color <- alpha("gray", rescale(
       degrees, to = c(0.3, 1)))
-    plot(g, vertex.size=rescale(degrees, to = c(15,25)),  layout=layout.fruchterman.reingold(g, niter=10000))
+    plot(g, vertex.size=rescale(degrees, to = c(10,20)),  layout=layout.fruchterman.reingold(g, niter=10000))
+    
+    #Calculating graph metrics
+    calcMetrics(g, paste(type, melodiesNames[[i]], sep="-")) 
+    
     dev.off()
   }
   
