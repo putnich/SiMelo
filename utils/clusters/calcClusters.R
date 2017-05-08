@@ -73,7 +73,7 @@ kmeansClustering <- function(colNames, author, clusterData) {
     print("K-means clustering")
     print(paste("Number of clusters ", i, sep=""))
     print("-----------------------------------------------------------")
-    print(as.data.frame(list("Melody number" = colNames, "Author" = author,"Predicted cluster number" = cKm)))
+    print(as.data.frame(list("Author" = author,"Predicted cluster number" = cKm)))
     kmeansss[i] <- km$tot.withinss
     print(paste("Total within-cluster sum of squares: ", kmeansss[i], sep=""))
     print(paste("The ratio of between-cluster sum of squares and total sum of squares: ", km$betweenss/km$totss, sep=""))
@@ -105,7 +105,7 @@ kmedoidsClustering <- function(colNames, author, clusterData) {
     }
     kmedoidssw[i] <- mCluster$silinfo$avg.width
     print(paste("Average silhouette width = [",mCluster$silinfo$avg.width, "]", sep=""))
-    print(as.data.frame(list("Melody number" = colNames, "Author" = author, "Predicted cluster number" = cM)))
+    print(as.data.frame(list("Author" = author, "Predicted cluster number" = cM)))
   }
   plot(2:k, unlist(kmedoidssw), type="b") #Plotting average silhouette widths per number of clusters
 }

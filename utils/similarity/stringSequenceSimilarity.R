@@ -140,7 +140,7 @@ qgramsSimilarity <- function(melodiesTable, a, method) {
   #Matrix of occurences of the note sequences in melodies, for different length of sequences
   clusterData <- qgrams(melodies[[1]], melodies[[2]], melodies[[3]], melodies[[4]], melodies[[5]], melodies[[6]], melodies[[7]], 
                         melodies[[8]], melodies[[9]], melodies[[10]], melodies[[11]], melodies[[12]], melodies[[13]], melodies[[14]], 
-                        melodies[[15]], melodies[[16]], melodies[[17]], melodies[[18]], q=a)
+                        melodies[[15]], melodies[[16]], melodies[[17]], q=a)
   
   rownames(clusterData) <- melodiesNames
   
