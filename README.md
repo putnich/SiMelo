@@ -1,4 +1,4 @@
-# MelodiesRecognition
+# Melodies Recognition
 
 The aim of this project is to test various mathematical and text methods on melodies similarity. 
 Two main groups of methods are used:
@@ -25,7 +25,7 @@ Three clustering methods were used:
   3. K-medoids clustering
 The overall conclusion is that simple directed graphs are good at clustering by author, while LCS method can quite accurately divide melodies by type, tact and style.
 
-#Data
+# Data
 Melodies are divided as follows:
   1. Melodies by Bach:
    * two preludes
@@ -35,29 +35,29 @@ Melodies are divided as follows:
    * one concert
   2. Melodies by Mozart:
     * two minuets
-#Distance
-##Details on eigen vector methods
-###Simple directed graphs
-###Multigraphs
-###Multigraphs with cumulative durations
-###Multigraphs with average durations
-##Details on string similarity methods
-###Levenstein edit distance
-###Cosine distance
-###LCS method
-###OM method
-###Qgrams
-###Jaccard coefficient
+# Distance
+## Details on eigen vector methods
+### Simple directed graphs
+### Multigraphs
+### Multigraphs with cumulative durations
+### Multigraphs with average durations
+## Details on string similarity methods
+### Levenstein edit distance
+### Cosine distance
+### LCS method
+### OM method
+### Qgrams
+### Jaccard coefficient
 
-#Clustering
-##Hierarchical clustering
-##K-means
-##K-medoids
+# Clustering
+## Hierarchical clustering
+## K-means
+## K-medoids
 
-#Results
-|                                               | Results                                    |
-|  Method                                       |--------------------------------------------|
-|                                               |Hierarchical   | K-means      | K-medoids   |
+# Results
+|                                               |                                            |
+|  Method                                       |  Results                                   |
+|                                               |Hierarchical    K-means         K-medoids   |
 | --------------------------------------------- | ------------- |------------- |-------------|
 | Eigen simple graph                            |               |              |             |
 | Eigen multigraph                              |               |              |             |
