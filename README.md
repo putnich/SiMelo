@@ -58,7 +58,7 @@ Melodies are divided as follows:
 
 | Method                                        |Hierarchical   |K-means       | K-medoids   |
 | --------------------------------------------- | ------------- |------------- |-------------|
-| Eigen simple graph                            |               |              |             |
+| Eigen simple graph|The data is divided in two groups, by author|/|The data is divided in two groups, by author|
 | Eigen multigraph                              |               |              |             |
 | Eigen multigraph with cumulative durations    |               |              |             |
 | Eigen multigraph with average durations       |               |              |             |
