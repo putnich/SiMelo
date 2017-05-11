@@ -55,9 +55,8 @@ Melodies are divided as follows:
 ## K-medoids
 
 # Results
-|                                               |                                            |
-|  Method                                       |  Results                                   |
-|                                               |Hierarchical    K-means         K-medoids   |
+
+| Method                                        |Hierarchical   |K-means       | K-medoids   |
 | --------------------------------------------- | ------------- |------------- |-------------|
 | Eigen simple graph                            |               |              |             |
 | Eigen multigraph                              |               |              |             |
