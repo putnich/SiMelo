@@ -57,7 +57,7 @@ Melodies are divided as follows:
 # Results
 
 | Method                                        |Hierarchical   |K-means       | K-medoids   |
-| --------------------------------------------- | ------------- |------------- |-------------|
+| --------------------------------------------- | -------------------------- |-------------------------- |--------------------------|
 | Eigen simple graph|The data is divided in two groups, by author|Not significant|The data is divided in two groups, by author|
 | Eigen multigraph                              |Data is divided in three group, one group containing melodies by Mozart, second by Bach and latter containing preludes of Bach, as composition of different style to the previous ones|Data is divided in four group, one group containing melodies by Mozart, other three groups only by Bach, but later differentiation among them has no uniform explanation|Data is divided into two groups, one containing only melodies by Mozart, second is mixed|
 | Eigen multigraph with cumulative durations    | Not significant |Not significant|Not significant|
