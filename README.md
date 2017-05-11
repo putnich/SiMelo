@@ -51,7 +51,9 @@ Besides melodies, for the calculation is used Duration column from the same data
 The melodies are transformed into adjacency matrices, whose cells contain average of durations of notes, i.e. sum of durations divided by number of connections between notes (makeMatrices function). Eigenvectors are calculated by using A\*A' matrix (calcEigens function), and Euclidean distances between those vectors (calcDistances function). 
 ## Details on string similarity methods
 ### Levenstein edit distance
+The levensteinSimilarity function is used. The edit distance is calculated between all melodies in dataset, and the distance matric is generated for later clustering. 
 ### Cosine distance
+The melodies are converted into melody-note matrix, containing frequences of notes in a melody. Those freequency vectors are then used to calculate cosine distance between all melodies, while generating distance matrix for later clustering.
 ### LCS method
 ### OM method
 ### Qgrams
