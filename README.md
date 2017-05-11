@@ -56,15 +56,15 @@ Melodies are divided as follows:
 
 # Results
 
-| Method                                        |Hierarchical   |K-means       | K-medoids   |
-| --------------------------------------------- | -------------------------- |-------------------------- |--------------------------|
+| Method|Hierarchical   |K-means       | K-medoids   |
+| ----------------| -------------------------------- |----------------|
 | Eigen simple graph|The data is divided in two groups, by author|Not significant|The data is divided in two groups, by author|
-| Eigen multigraph                              |Data is divided in three group, one group containing melodies by Mozart, second by Bach and latter containing preludes of Bach, as composition of different style to the previous ones|Data is divided in four group, one group containing melodies by Mozart, other three groups only by Bach, but later differentiation among them has no uniform explanation|Data is divided into two groups, one containing only melodies by Mozart, second is mixed|
-| Eigen multigraph with cumulative durations    | Not significant |Not significant|Not significant|
-| Eigen multigraph with average durations       | Not significant |Not significant|Not significant|
-| Levenstein distance                           |One cluster contains only melodies by Mozart, second contains melodies in G major scale, third contains two Preludes, remaining clustering not significant|Not significant |One cluster containing only melodies by Mozart, other is mixed|
-| Cosine distance                              | Not significant |Not significant|Not significant|
-| LCS                                         |One cluster contains three melodies by Bach written in G-dur, second two melodies by Bach, third is isolated with one melody, but it is logical, since it is the only one written in C major in dataset, third cluster contains two minuets by Mozart, fourth is isolated case, since the one melody it contains is uniquely in dataset written in E minor, fifth cluster contains two melodies written in G major, remaining clustering is not significant |Not significant|Not significant|
-| OM                                            | Not significant |Not significant|Not significant|
-| Qgrams                                        | Not significant |Not significant|Not significant|
-| Jaccard coefficient                           | Not significant |Not significant|Not significant|
+| Eigen multigraph|Data is divided in three group, one group containing melodies by Mozart, second by Bach and latter containing preludes of Bach, as composition of different style to the previous ones|Data is divided in four group, one group containing melodies by Mozart, other three groups only by Bach, but later differentiation among them has no uniform explanation|Data is divided into two groups, one containing only melodies by Mozart, second is mixed|
+| Eigen multigraph with cumulative durations | Not significant |Not significant|Not significant|
+| Eigen multigraph with average durations | Not significant |Not significant|Not significant|
+| Levenstein distance |One cluster contains only melodies by Mozart, second contains melodies in G major scale, third contains two Preludes, remaining clustering not significant|Not significant |One cluster containing only melodies by Mozart, other is mixed|
+| Cosine distance| Not significant |Not significant|Not significant|
+| LCS  |One cluster contains three melodies by Bach written in G-dur, second two melodies by Bach, third is isolated with one melody, but it is logical, since it is the only one written in C major in dataset, third cluster contains two minuets by Mozart, fourth is isolated case, since the one melody it contains is uniquely in dataset written in E minor, fifth cluster contains two melodies written in G major, remaining clustering is not significant |Not significant|Not significant|
+| OM | Not significant |Not significant|Not significant|
+| Qgrams| Not significant |Not significant|Not significant|
+| Jaccard coefficient| Not significant |Not significant|Not significant|
