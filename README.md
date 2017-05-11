@@ -15,15 +15,19 @@ Two main groups of methods are used:
   * with qgrams method
   * with Jaccard coefficient
   
- The dataset used contains 17 instances, with compositions by Bach versus Mozart, as their style and epoch is opposed in music theory and practise. 
- All melodies were transcribed to letter-duration notation. Also, the sheets are for violin, not for pianos, since accords make 
-  computability less possible. Sheets can be found at (8notes, 2017). 
-With the distances of melodies from dataset, clustering was a good choise forrecognition analysis, since the prediction is not posible without bigger dataset.
+
+The dataset contains 17 instances, with compositions by Bach versus Mozart, as their style and epoch is opposed in music theory and practise. 
+
+All melodies were transcribed to letter-duration notation. Also, the sheets are for violin, not for pianos, since accords make computability less possible. Sheets can be found at (8notes, 2017). 
+
+With the distances of melodies from dataset, clustering was a good choise for recognition analysis, since the prediction is not possible without bigger dataset.
+
 Three clustering methods were used:
   * Hierarchical clustering
   * K-means clustering
   * K-medoids clustering
-The overall conclusion is that simple directed graphs are good at clustering by author, while LCS method can quite accurately divide melodies by type, tact and style.
+
+The overall conclusion is that simple directed graphs are good at clustering by author, while LCS method can quite accurately divide melodies by author, type, tact and style.
 
 # Data
 Melodies are divided as follows:
@@ -38,9 +42,13 @@ Melodies are divided as follows:
 # Distance
 ## Details on eigen vector methods
 ### Simple directed graphs
+The melodies from loaded dataset are tranformed into 0-1 adjacency matrices (function makeMatrices), whose cells contain 1 (if note is connected with another note), or 0 (if it is not connected). Then the eigenvector is calculated for every matrix A\*A' using calcEigens function. Later on, the distance matrix is produced, containing Euclidean distances between each pair of melodies (calcDistances function). 
 ### Multigraphs
+The melodies are transformed into adjacency matrices, whose cells contain number of edges (connections) between each note (makeMatrices function). Eigenvectors are calculated also by using A\*A' matrix (calcEigens function), and Euclidean distances between those vectors (calcDistances function). 
 ### Multigraphs with cumulative durations
+Besides melodies, for the calculation is used Duration column from the same dataset. The melodies are transformed into adjacency matrices, whose cells contain sum of durations of notes, i.e. weight of edges (makeMatrices function). Eigenvectors are calculated by using A\*A' matrix (calcEigens function), and Euclidean distances between those vectors (calcDistances function). 
 ### Multigraphs with average durations
+The melodies are transformed into adjacency matrices, whose cells contain average of durations of notes, i.e. sum of durations divided by number of connections between notes (makeMatrices function). Eigenvectors are calculated by using A\*A' matrix (calcEigens function), and Euclidean distances between those vectors (calcDistances function). 
 ## Details on string similarity methods
 ### Levenstein edit distance
 ### Cosine distance
