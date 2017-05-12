@@ -94,7 +94,7 @@ The user can chose the k, maximum number of clusters desired. Then the algortith
 ## K-medoids
 Similarly to k-means, user choses the maximum number of clusters. Tthe algorithm does the clustering while printing maximum silhouette width of clusters, used to finally chose the real number of clusters. 
 # Results
-
+The results of running the program can be summarized as below:
 | Method                        | Hierarchical                         | K-means                      | K-medoids                    |
 | ------------------------------| ------------------------------------ |------------------------------|------------------------------|
 | Eigen simple graph | Two groups, by author | Not significant | Two groups, by author |
@@ -108,5 +108,15 @@ Similarly to k-means, user choses the maximum number of clusters. Tthe algorithm
 | Qgrams| Not significant | Not significant | Not significant |
 | Jaccard coefficient | Not significant | Not significant | Not significant |
 
+Here not significant means the clustering was random, meaning not grouped by any common music characteristic.
+
 # Conclusion
-K-means has proven no to be a good choise for clustering, either because of the small dataset, or because of the random choise of centroid in the melodic space. K-medoids has slightly better clustered the data then k-means, since the melodies are used as centroids. The hierarchical clustering was the metod with the most fruitful results. 
+From the table above it can be concluded that eigen vector method for simple graphs gives a signature for the author of the melody. There hierarchical clustering and k-medoids clustering was successful at correctly clustering by author. The results are given in a form of dendrogram:
+
+Also, the multigraph method with hierarchical clustering has divided melodies by author, further isolating the group of Preludes of Bach, but it is logical since that is the completely different type of melodies. Unfortunatelly, it does not give a further clustering by type of melody, so it can be understood as a more sensitive method, but not more accurate then simple graph method. 
+
+Among string methods, the LCS method has mostly interesting divided melodies by scale that was used and the type. That was expected, since the usage of notes is the one that determines the type of melody, and that specific usage belongs to a scale. But still, there are melodies whose membership in a cluster cannot be explained.
+
+The remaining methods have not proven to be good at clustering with the dataset of these small proportions. 
+
+When about clustering methods, overall, k-means has not proven no to be a good choise for clustering, either because of the small dataset, or because of the random choise of centroids in the melodic space. K-medoids has slightly better clustered the data then k-means, since the melodies are used as centroids. The hierarchical clustering was the metod with the most fruitful results. 
