@@ -1,42 +1,6 @@
 # Melodies Recognition
 
-The aim of this project is to test various mathematical and text methods on melodies similarity. 
-Two main groups of methods are used:
-* eigen vector of A*A' matrix, as proposed by (Cvetkovic, Manojlovic 2013)
-  * of simple directed graphs
-  * of multigraphs
-  * of multigraphs, using sum of note durations
-  * of multigraphs, using average of note durations
-* string similarity
-  * with Levenstein (edit) distance
-  * with cosine distance
-  * with length of longest subsequence measure
-  * with optimal matching method
-  * with qgrams method
-  * with Jaccard coefficient
-  
-The melody can be represented as graph, where the adjacency matrix can be calculated, and then the eigenvector of the same matrix. The representative example is the melody Ode to Joy by Bethoven, and the procedure is shown below:
-
-![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/odetojoy.PNG)
-
-The melody is transformed into graph, whose nodes are notes, transcribed to letter notation.
-
-![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/odetojoygraph.PNG)
-
-Now the adjacency matric can be easily determined:
-
-![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/odetojoymatrix.PNG)
-
-The eigenvector of this matrix is (0.0389,1,1.2696,3.0536,6.6379) and it can be used as a signature for melody, and it is a single melodic dot in 12-dimensional space of melodies. In this implementation, the eigenvector of A\*A' matrix is used, as aforementioned.
-
-With the distances of melodies from dataset, clustering was a good choise for recognition analysis, since the prediction is not possible without bigger dataset.
-
-Three clustering methods were used:
-  * Hierarchical clustering
-  * K-means clustering
-  * K-medoids clustering
-
-The overall conclusion is that simple directed graphs are good at clustering by author, while LCS method can quite accurately divide melodies by author, type, and style. The hierarchical clustering method was the most accurate one.
+The aim of this project is to test various mathematical and text methods on melodies similarity. For that purpose the eigen vectors of different types of graphs were used, but also the string distance measures. The melodies are tranformed into letter notation, so the graphs can be easily constructed. The sequence of notes is understood as a string, and the notes written in letters as its characters, which gives us an introduction to the approach of string sequence similarities. It has been observed among the data in this project that the eigenvector method for simple directed graphs has done clustering precisely by author, while longest common subsequence, as one of the string methods, has differentiated melodies by author and other characteristics, such as the scale that was used and type of melody (concert, menuet, aria etc). Besides, the hierarchical clustering method was the most accurate one, as shown in the following lines.
 
 # Data
 
@@ -67,7 +31,34 @@ Melodies are divided as follows:
    
     
 # Distance
-## Details on eigen vector methods
+
+Two main groups of methods are used:
+* eigen vector of A*A' matrix, as proposed by (Cvetkovic, Manojlovic 2013)
+  * of simple directed graphs
+  * of multigraphs
+  * of multigraphs, using sum of note durations
+  * of multigraphs, using average of note durations
+* string similarity
+  * with Levenstein (edit) distance
+  * with cosine distance
+  * with length of longest subsequence measure
+  * with optimal matching method
+  * with qgrams method
+  * with Jaccard coefficient
+## Eigen vector methods
+The melody can be given in a form of the graph, where the adjacency matrix can be calculated, and then the eigenvector of the same matrix. The representative example is the melody Ode to Joy by Bethoven, and the procedure is shown below:
+
+![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/odetojoy.PNG)
+
+The melody is transformed into graph, whose nodes are notes, transcribed to letter notation.
+
+![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/odetojoygraph.PNG)
+
+Now the adjacency matric can be easily determined:
+
+![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/odetojoymatrix.PNG)
+
+The eigenvector of this matrix is (0.0389,1,1.2696,3.0536,6.6379) and it can be used as a signature for melody (see ), and it is a single melodic dot in 12-dimensional space of melodies. In this implementation, the eigenvector of A\*A' matrix is used, as aforementioned.
 ### Simple directed graphs
 The melodies from loaded dataset are tranformed into 0-1 adjacency matrices (function makeMatrices), whose cells contain 1 (if note is connected with another note), or 0 (if it is not connected). Then the eigenvector is calculated for every matrix A\*A' using calcEigens function. Later on, the distance matrix is produced, containing Euclidean distances between each pair of melodies (calcDistances function). 
 ### Multigraphs
@@ -91,7 +82,11 @@ Here the distances are frequencies of term (of various length, that user defines
 Jaccard coefficient, or index, measures similaritiy of strings as sets. It is the cardinality of intersection divided by union of set, in this case of strings. 
 ![alt text](https://wikimedia.org/api/rest_v1/media/math/render/svg/eaef5aa86949f49e7dc6b9c8c3dd8b233332c9e7)
 # Clustering
-Since the dataset contains just 17 instances, the decission was to use clustering as method for analysing melodies, not the prediction. The aim of clustering was to observe if the melodies would be grouped by some melody attribute, for example by author, scale or other.  
+Since the dataset contains just 17 instances, the decission was to use clustering as method for analysing melodies, not the prediction. The aim of clustering was to observe if the melodies would be grouped by some melody attribute, for example by author, scale or other. 
+Three clustering methods were used:
+  * Hierarchical clustering
+  * K-means clustering
+  * K-medoids clustering
 ## Hierarchical clustering
 Agglomerative hierarchical clustering was used, using Ward method. The cluster cut is also implemented, that prints melodies in the cut cluster. The dendrogram of clustering is plotted.
 ## K-means
