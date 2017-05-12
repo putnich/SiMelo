@@ -6,9 +6,9 @@ The aim of this project is to test various mathematical and text methods on melo
 
 The dataset contains 17 instances, with compositions by Bach versus Mozart, as their style and epoch is opposed in music theory and practise. 
 
-All melodies were transcribed to letter-duration notation. Also, the sheets are for violin, not for pianos, since accords make computability less possible. Sheets can be found at (8notes, 2017). 
+All melodies were transcribed to letter-duration notation. Also, the sheets are for violin, not for pianos, since accords make computability less possible.
 
-Melodies are divided as follows:
+Melodies are divided as follows, with scale specified:
   * Melodies by Bach:
     * Prelude from Suite no. 1 for unaccompanied cello - C major
     * Air on G-string - A major
@@ -33,7 +33,7 @@ Melodies are divided as follows:
 # Distance
 
 Two main groups of methods are used:
-* eigen vector of A*A' matrix, as proposed by (Cvetkovic, Manojlovic 2013)
+* eigen vector of A*A' matrix, as proposed by Cvetkovic and Manojlovic, see references
   * of simple directed graphs
   * of multigraphs
   * of multigraphs, using sum of note durations
@@ -71,15 +71,15 @@ The melodies are transformed into adjacency matrices, whose cells contain averag
 ### Levenstein edit distance
 The levensteinSimilarity function is used. The edit distance is calculated between all melodies in dataset, and the distance matric is generated for later clustering. 
 ### Cosine distance
-The melodies are converted into melody-note matrix, containing frequences of notes in a melody. Those freequency vectors are then used to calculate cosine distance between all melodies, while generating distance matrix for later clustering.
+The cosineSimilarity function is used. The melodies are converted into melody-note matrix, containing frequences of notes in a melody. Those freequency vectors are then used to calculate cosine distance between all melodies, while generating distance matrix for later clustering. The lsa pakage was used for cosine distance calculations, and it will be described in the following lines.
 ### LCS method
-The distances between melodies are calculated as the length of the longest commom subsequence of the melodies. Melodies are transformed into sequences, and then the distance is calculated, using tranformation cost matrix, whose values are constant (since the operations of inserting, deleting or substituting note in melody equally affect the melody). Distances are later used for clustering.
+The LCSSimilarity function is used. The distances between melodies are calculated as the length of the longest common subsequence of the melodies. Melodies are transformed into sequences, and then the distance is calculated, using tranformation cost matrix, whose values are constant (since the operations of inserting, deleting or substituting note in melody equally affect the melody). Distances are later used for clustering. The package used was TraMineR, described in the following lines.
 ### OM method
-Similarly to LCS method, melodies are tranformed into sequences, an then the distance matrix is generated using optimal matching algorithm and the cost matrix. 
+The OMSimilarity function is used. Similarly to LCS method, melodies are tranformed into sequences, an then the distance matrix is generated using optimal matching algorithm and the cost matrix. The package used was TraMineR, described in the following lines.
 ### Qgrams
-Here the distances are frequencies of term (of various length, that user defines) in a document, i.e. note pairs in melodies. The output is document-term matrix, later used for clustering.
+The qgramsSimilarity function is used. Here the distances are frequencies of term (of various length, that user defines) in a document, i.e. note pairs in melodies. The output is document-term matrix, later used for clustering. The stringdist package was used. 
 ### Jaccard coefficient
-Jaccard coefficient, or index, measures similaritiy of strings as sets. It is the cardinality of intersection divided by union of set, in this case of strings. 
+The jaccardSimilarity function is used. Jaccard coefficient, or index, measures similarity of strings as sets. It is the cardinality of intersection divided by union of set, in this case of strings. 
 
 ![alt text](https://wikimedia.org/api/rest_v1/media/math/render/svg/eaef5aa86949f49e7dc6b9c8c3dd8b233332c9e7)
 
@@ -89,21 +89,25 @@ Three clustering methods were used:
   * Hierarchical clustering
   * K-means clustering
   * K-medoids clustering
+
+The package cluster was used for clustering.
+
 ## Hierarchical clustering
-Agglomerative hierarchical clustering was used, using Ward method. The cluster cut is also implemented, that prints melodies in the cut cluster. The dendrogram of clustering is plotted.
+The hierarchicalClustering function is used. Agglomerative hierarchical clustering was the HC type, using Ward method. The cluster cut is also implemented, that prints melodies in the cut cluster. The dendrogram of clustering is plotted.
 ## K-means
-The user can chose the k, maximum number of clusters desired. Then the algortithm prints all the clustering, with the plot of within cluster sum of squares (Elbow method), that is used to determine the real number of clusters. 
+The kmeansCLustering function is uded. There user can chose the k, maximum number of clusters desired. Then the algortithm prints all the clustering, with the plot of within cluster sum of squares (Elbow method), that is used to determine the real number of clusters. 
 ## K-medoids
-Similarly to k-means, user choses the maximum number of clusters. Tthe algorithm does the clustering while printing maximum silhouette width of clusters, used to finally chose the real number of clusters. 
+The kmedoidsClustering function is used. Similarly to k-means, user choses the maximum number of clusters. The algorithm does the clustering while printing maximum silhouette width of clusters, used to finally chose the real number of clusters. 
 # Results
 The results of running the program can be summarized as below:
+
 | Method                        | Hierarchical                         | K-means                      | K-medoids                    |
 | ------------------------------| ------------------------------------ |------------------------------|------------------------------|
 | Eigen simple graph | Two groups, by author | Not significant | Two groups, by author |
 | Eigen multigraph | Three group, one is Mozart, second is Bach and latter preludes by Bach| Four group, one is Mozart, other three groups only by Bach (?)|Two groups, one is Mozart, remaining is mixed |
 | Eigen multigraph with cumulative durations | Not significant | Not significant | Not significant |
 | Eigen multigraph with average durations | Not significant | Not significant | Not significant |
-| Levenstein distance | One is Mozart, second is G major scale, third are two Ppreludes, remaining not significant | Not significant | One is Mozart, remaining is mixed |
+| Levenstein distance | One is Mozart, second is G major scale, third are two Preludes, remaining not significant | Not significant | One is Mozart, remaining is mixed |
 | Cosine distance | Not significant | Not significant | Not significant |
 | LCS  | One is Bach in G-dur, second is Bach, third is one melody in C major in dataset, third is two minuets by Mozart, fourth is one in E minor, fifth is G major, remaining not significant | Not significant | Not significant |
 | OM | Not significant | Not significant | Not significant |
@@ -114,11 +118,30 @@ Here not significant means the clustering was random, meaning not grouped by any
 
 # Conclusion
 From the table above it can be concluded that eigen vector method for simple graphs gives a signature for the author of the melody. There hierarchical clustering and k-medoids clustering was successful at correctly clustering by author. The results are given in a form of dendrogram:
-![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/dendrogram-string-LCS.jpg)
+![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/dendrogram-eigen-simple.jpg)
 Also, the multigraph method with hierarchical clustering has divided melodies by author, further isolating the group of Preludes of Bach, but it is logical since that is the completely different type of melodies. Unfortunatelly, it does not give a further clustering by type of melody, so it can be understood as a more sensitive method, but not more accurate then simple graph method. 
 
 Among string methods, the LCS method has mostly interesting divided melodies by scale that was used and the type. That was expected, since the usage of notes is the one that determines the type of melody, and that specific usage belongs to a scale. But still, there are melodies whose membership in a cluster cannot be explained.
-![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/dendrogram-string-LCS.jpg)
+
 The remaining methods have not proven to be good at clustering with the dataset of these small proportions. 
 
-When about clustering methods, overall, k-means has not proven no to be a good choise for clustering, either because of the small dataset, or because of the random choise of centroids in the melodic space. K-medoids has slightly better clustered the data then k-means, since the melodies are used as centroids. The hierarchical clustering was the metod with the most fruitful results. 
+When about clustering methods, overall, k-means has not proven to be a good choise for clustering, either because of the small dataset, or because of the random choise of centroids in the melodic space. K-medoids has slightly better clustered the data then k-means, since the melodies are used as centroids. The hierarchical clustering was the metod with the most fruitful results. 
+
+For the further analysis of efficiency of these methods the larger dataset is requiered.
+
+# Packages
+
+## TraMineR
+This package is generally used for analysing the sequences of states, i.e. discrete sequence data. It was developed at the Institute of Demography and Socioeconomics at the University of Geneva, Switzerland, with the name Life Trajectory Miner for R. The main purpose of the package is to analyse social sciences data, especially in describing family trajectories, as the name tells us. It can be found [here](http://traminer.unige.ch/)
+
+## stringdist
+The package was designed to calculate various string distances, such as Levenstein distance, Optimal matching, qgrams etc. The aim was to create an uniform interface of string distance methods which are usually scattered around various R packages (as native adist which was used in this project for calculating Levenstein distance). It can be found at [this Github project](https://github.com/markvanderloo/stringdist).
+
+## lsa
+This package provides latent semantic utilities, which is the technique used in natural language processing, where the relationships between the documents and terms are observed. It can be found [here](https://cran.r-project.org/web/packages/lsa/index.html)
+
+# References
+1. Cvetković Dragoš, Manojlović Vesna. Spectral recognition of music melodies. SYM-OP-IS 2013. Univerzitet u Beogradu, Fakultet organizacionih nauka. 2013. 269-270
+2. CRAN R project lsa, https://cran.r-project.org/web/packages/lsa/index.html , date accessed: 12.05.2017.
+3. TraMineR, http://traminer.unige.ch/ , date accessed: 12.05.2017.
+4. Github stringdist project, https://github.com/markvanderloo/stringdist, date accessed: 12.05.2017.
