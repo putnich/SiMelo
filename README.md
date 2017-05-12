@@ -95,7 +95,7 @@ The package cluster was used for clustering.
 ## Hierarchical clustering
 The hierarchicalClustering function is used. Agglomerative hierarchical clustering was the HC type, using Ward method. The cluster cut is also implemented, that prints melodies in the cut cluster. The dendrogram of clustering is plotted.
 ## K-means
-The kmeansCLustering function is uded. There user can chose the k, maximum number of clusters desired. Then the algortithm prints all the clustering, with the plot of within cluster sum of squares (Elbow method), that is used to determine the real number of clusters. 
+The kmeansCLustering function is uded. There user can chose the k, maximum number of clusters desired. Then the algorithm prints all the clustering, with the plot of within cluster sum of squares (Elbow method), that is used to determine the real number of clusters. 
 ## K-medoids
 The kmedoidsClustering function is used. Similarly to k-means, user choses the maximum number of clusters. The algorithm does the clustering while printing maximum silhouette width of clusters, used to finally chose the real number of clusters. 
 # Results
@@ -119,13 +119,13 @@ Here not significant means the clustering was random, meaning not grouped by any
 # Conclusion
 From the table above it can be concluded that eigen vector method for simple graphs gives a signature for the author of the melody. There hierarchical clustering and k-medoids clustering was successful at correctly clustering by author. The results are given in a form of dendrogram:
 ![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/dendrogram-eigen-simple.jpg)
-Also, the multigraph method with hierarchical clustering has divided melodies by author, further isolating the group of Preludes of Bach, but it is logical since that is the completely different type of melodies. Unfortunatelly, it does not give a further clustering by type of melody, so it can be understood as a more sensitive method, but not more accurate then simple graph method. 
+Also, the multigraph method with hierarchical clustering has divided melodies by author, further isolating the group of Preludes of Bach, but it is logical since that is the completely different type of melodies. Unfortunatelly, it does not give a further clustering by type of melody, so it can be understood as a more sensitive method, but not more accurate than simple graph method. 
 
 Among string methods, the LCS method has mostly interesting divided melodies by scale that was used and the type. That was expected, since the usage of notes is the one that determines the type of melody, and that specific usage belongs to a scale. But still, there are melodies whose membership in a cluster cannot be explained.
 
 The remaining methods have not proven to be good at clustering with the dataset of these small proportions. 
 
-When about clustering methods, overall, k-means has not proven to be a good choise for clustering, either because of the small dataset, or because of the random choise of centroids in the melodic space. K-medoids has slightly better clustered the data then k-means, since the melodies are used as centroids. The hierarchical clustering was the metod with the most fruitful results. 
+When about clustering methods, overall, k-means has not proven to be a good choise for clustering, either because of the small dataset, or because of the random choise of centroids in the melodic space. K-medoids has slightly better clustered the data than k-means, since the melodies are used as centroids. The hierarchical clustering was the metod with the most fruitful results. 
 
 For the further analysis of efficiency of these methods the larger dataset is requiered.
 
