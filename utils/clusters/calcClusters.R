@@ -46,6 +46,10 @@ hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
   
   #Cluster cut - melodies are divided into groups
   cut <- readline("What is the cut number for dendrogram? ")
+  if(cut <= 1) {
+    print("Must be greater then 1")
+    cut <- 2
+  }
   clusterCut <- cutree(dendrogram, cut) #Dendrogram cut - see dendrogram.jpg for cut number
   cH <- vector()
   len <- length(clusterCut)
@@ -60,6 +64,10 @@ hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
 kmeansClustering <- function(colNames, author, clusterData) {
  
   k <- readline("What is the k for k-means? ")
+  if(k <= 1 || k > length(colNames)) {
+    print("k must be between 2 and number of melodies in the dataset")
+    k <- 5
+  }
   print("-----------------------------------------------------------")
   print("K-means:")
   print("-----------------------------------------------------------")
@@ -84,6 +92,10 @@ kmeansClustering <- function(colNames, author, clusterData) {
 kmedoidsClustering <- function(colNames, author, clusterData) {
   
   k <- readline("What is the k for k-medoids? ")
+  if(k <= 1 || k > length(colNames)) {
+    print("k must be between 2 and number of melodies in the dataset")
+    k <- 5
+  }
   print("-----------------------------------------------------------")
   print("K-medoids:")
   print("-----------------------------------------------------------")

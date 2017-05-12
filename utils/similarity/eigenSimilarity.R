@@ -34,7 +34,7 @@ eigenSimilarity <- function(melodiesTable, type) {
   melodiesNames <- melodiesTable$Melody.name
   authors <- melodiesTable$Author
   
-  distanceMatrix <- calcDistances(NULL, melodiesNames, authors, eigensList, NULL) #Creating distance matrix using eigenvalues
+  distanceMatrix <- calcDistances(NULL, melodiesNames, authors, eigensList, NULL, "eigen") #Creating distance matrix using eigenvalues
   
   print("-----------------------------------------------------------")
   print("Cluster analysis:")
@@ -50,7 +50,7 @@ eigenSimilarity <- function(melodiesTable, type) {
   calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-medoids")
   
   #Generating graph for melodies
-  makeGraphs(melodiesNames, matricesList, type) #Creating graphs for each melody
+  # makeGraphs(melodiesNames, matricesList, type) #Creating graphs for each melody
 }
 
 makeMatrices <- function(melodiesList, durationsList, type) {
