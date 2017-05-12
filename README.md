@@ -117,11 +117,18 @@ The results of running the program can be summarized as below:
 Here not significant means the clustering was random, meaning not grouped by any common music characteristic.
 
 # Conclusion
-From the table above it can be concluded that eigen vector method for simple graphs gives a signature for the author of the melody. There hierarchical clustering and k-medoids clustering was successful at correctly clustering by author. The results are given in a form of dendrogram:
+According to the table above, the eigen vector method for simple graphs gives a signature for the author of the melody. There hierarchical clustering and k-medoids clustering was successful at correctly clustering by author. The results are given in a form of dendrogram:
 ![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/dendrogram-eigen-simple.jpg)
+
+Here, in the first cluster, five out of six melodies are correctly recognised as Mozart, while in the second cluster nine out of 11 melodies are recognised as Bach. It gives us roughly 80% of precission at clustering by author. 
+
 Also, the multigraph method with hierarchical clustering has divided melodies by author, further isolating the group of Preludes of Bach, but it is logical since that is the completely different type of melodies. Unfortunatelly, it does not give a further clustering by type of melody, so it can be understood as a more sensitive method, but not more accurate than simple graph method. 
 
 Among string methods, the LCS method has mostly interesting divided melodies by scale that was used and the type. That was expected, since the usage of notes is the one that determines the type of melody, and that specific usage belongs to a scale. But still, there are melodies whose membership in a cluster cannot be explained.
+
+![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/dendrogram-string-LCS.jpg)
+
+Here we have first cluster containing melodies by Bach in G major (Minuet, Aria and Arioso). The second cluster cannot be explained. The third, which is composition named Prelude no. 1 for unaccompanied cello is isolated since it is the only melody in the dataset written in C major scale. Fourth cluster is miced A major, G major, but it is not significant. Fifth cluster are menuets from Mozart, as a melodic type. Lacrimosa, as sixth, is isolated case, since it is the only one in the dataset written in e minor scale. And the last cluster (Laudate dominum, Oh Isis und Osiris) is in G major. It can be concluded that this method is very sensitive at types and scales, it would probably cluster the data of the larger proportions well by melody type and scale. 
 
 The remaining methods have not proven to be good at clustering with the dataset of these small proportions. 
 
