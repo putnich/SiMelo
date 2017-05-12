@@ -80,7 +80,9 @@ Similarly to LCS method, melodies are tranformed into sequences, an then the dis
 Here the distances are frequencies of term (of various length, that user defines) in a document, i.e. note pairs in melodies. The output is document-term matrix, later used for clustering.
 ### Jaccard coefficient
 Jaccard coefficient, or index, measures similaritiy of strings as sets. It is the cardinality of intersection divided by union of set, in this case of strings. 
+
 ![alt text](https://wikimedia.org/api/rest_v1/media/math/render/svg/eaef5aa86949f49e7dc6b9c8c3dd8b233332c9e7)
+
 # Clustering
 Since the dataset contains just 17 instances, the decission was to use clustering as method for analysing melodies, not the prediction. The aim of clustering was to observe if the melodies would be grouped by some melody attribute, for example by author, scale or other. 
 Three clustering methods were used:
@@ -112,11 +114,11 @@ Here not significant means the clustering was random, meaning not grouped by any
 
 # Conclusion
 From the table above it can be concluded that eigen vector method for simple graphs gives a signature for the author of the melody. There hierarchical clustering and k-medoids clustering was successful at correctly clustering by author. The results are given in a form of dendrogram:
-
+![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/dendrogram-string-LCS.jpg)
 Also, the multigraph method with hierarchical clustering has divided melodies by author, further isolating the group of Preludes of Bach, but it is logical since that is the completely different type of melodies. Unfortunatelly, it does not give a further clustering by type of melody, so it can be understood as a more sensitive method, but not more accurate then simple graph method. 
 
 Among string methods, the LCS method has mostly interesting divided melodies by scale that was used and the type. That was expected, since the usage of notes is the one that determines the type of melody, and that specific usage belongs to a scale. But still, there are melodies whose membership in a cluster cannot be explained.
-
+![alt text](https://github.com/putnich/MelodiesRecognition/blob/master/data/misc/dendrogram-string-LCS.jpg)
 The remaining methods have not proven to be good at clustering with the dataset of these small proportions. 
 
 When about clustering methods, overall, k-means has not proven no to be a good choise for clustering, either because of the small dataset, or because of the random choise of centroids in the melodic space. K-medoids has slightly better clustered the data then k-means, since the melodies are used as centroids. The hierarchical clustering was the metod with the most fruitful results. 
