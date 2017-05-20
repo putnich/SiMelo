@@ -3,12 +3,15 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
   #libraries
   library(cluster)
   
-  #creating folder for cluster plots
-  if(!(dir.exists("data/plots/"))) {
-    dir.create("data/plots/")
+  #creating folders for cluster plots
+  if(!(dir.exists("results/"))) {
+    dir.create("results/")
   }
-  if(!(dir.exists("data/plots/dendrograms/"))) {
-    dir.create("data/plots/dendrograms/")
+  if(!(dir.exists("results/plots/"))) {
+    dir.create("results/plots/")
+  }
+  if(!(dir.exists("results/plots/dendrograms/"))) {
+    dir.create("results/plots/dendrograms/")
   }
   
   clusterData <- matrix()
@@ -39,12 +42,14 @@ hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
   print("-----------------------------------------------------------")
   
   #Writing dendrogram to the file
-  jpeg(paste("data/plots/dendrograms/dendrogram-", dataType, ".jpg", sep=""), width=1000, height=1000, unit='px')
+  jpeg(paste("results/plots/dendrograms/dendrogram-", dataType, ".jpg", sep=""), width=1000, height=1000, unit='px')
   dendrogram <- hclust(clusterData, method="ward.D") #Ward method is used
   plot(dendrogram, labels = rownames(colNames))
   dev.off()
   
+  plot(dendrogram) #Plotting for user
   #Cluster cut - melodies are divided into groups
+  print("Dendrogram file can be also found at data/plots/dendrograms")
   cut <- readline("What is the cut number for dendrogram? ")
   if(cut <= 1) {
     print("Must be greater then 1")
@@ -63,63 +68,79 @@ hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
 
 kmeansClustering <- function(colNames, author, clusterData) {
  
-  k <- readline("What is the k for k-means? ")
-  if(k <= 1 || k > length(colNames)) {
-    print("k must be between 2 and number of melodies in the dataset")
-    k <- 5
-  }
+  
   print("-----------------------------------------------------------")
   print("K-means:")
   print("-----------------------------------------------------------")
+  
   kmeansss <- list()
-  for(i in 2:k) {
+  
+  for(i in 2:10) {
     set.seed(5)
     km <- kmeans(clusterData, i)
-    cKm <- km$cluster
-    len <- length(colNames)
-    print("-----------------------------------------------------------")
-    print("K-means clustering")
-    print(paste("Number of clusters ", i, sep=""))
-    print("-----------------------------------------------------------")
-    print(as.data.frame(list("Author" = author,"Predicted cluster number" = cKm)))
-    kmeansss[i] <- km$tot.withinss
-    print(paste("Total within-cluster sum of squares: ", kmeansss[i], sep=""))
-    print(paste("The ratio of between-cluster sum of squares and total sum of squares: ", km$betweenss/km$totss, sep=""))
+    kmeansss[[i]] <- km$tot.withinss
   }
-  plot(2:k, unlist(kmeansss), type="b") #Elbow method
+  
+  plot(2:10, unlist(kmeansss), type="b") #Elbow method
+  
+  k <- readline("What is the k for k-means? ")
+  if((as.numeric(k) < 2)| (as.numeric(k) > 10)) {
+    print("k must be between 2 and 10")
+    return()
+  }
+  
+  set.seed(5)
+  kMeans <- kmeans(clusterData, k)
+
+  print("-----------------------------------------------------------")
+  print("K-means clustering")
+  print(paste("Number of clusters ", k, sep=""))
+  print("-----------------------------------------------------------")
+  print(as.data.frame(list("Author" = author,"Predicted cluster number" = kMeans$cluster)))
+  
+  print(paste("Total within-cluster sum of squares: ", kMeans$tot.withinss, sep=""))
+  
 }
 
 kmedoidsClustering <- function(colNames, author, clusterData) {
   
-  k <- readline("What is the k for k-medoids? ")
-  if(k <= 1 || k > length(colNames)) {
-    print("k must be between 2 and number of melodies in the dataset")
-    k <- 5
-  }
   print("-----------------------------------------------------------")
   print("K-medoids:")
   print("-----------------------------------------------------------")
+  
   kmedoidssw <- list()
-  for(i in 2:k) {
-    print("-----------------------------------------------------------")
-    print("K-medoids clustering")
-    print(paste("Number of clusters ", i, sep=""))
-    print("-----------------------------------------------------------")
+  
+  for(i in 2:10) {
     set.seed(5)
     mCluster <- pam(clusterData, i)
-    cM <- mCluster$clustering
-    # plot(mCluster$clustering)
-    print("Medoids:")
-    print(mCluster$medoids)
-    print("Silhouette info:")
-    for(j in 1:length(mCluster$silinfo$clus.avg.widths)) {
-      print(paste("Average silhouette width per cluster ", j, " = [", mCluster$silinfo$clus.avg.widths[[j]], "]", sep=""))
-    }
     kmedoidssw[i] <- mCluster$silinfo$avg.width
-    print(paste("Average silhouette width = [",mCluster$silinfo$avg.width, "]", sep=""))
-    print(as.data.frame(list("Author" = author, "Predicted cluster number" = cM)))
+  
   }
-  plot(2:k, unlist(kmedoidssw), type="b") #Plotting average silhouette widths per number of clusters
+  
+  plot(2:10, unlist(kmedoidssw), type="b") #Plotting average silhouette widths per number of clusters
+  
+  k <- readline("What is the k for k-medoids? ")
+  if((as.numeric(k) < 2)| (as.numeric(k) > 10)) {
+    print("k must be between 2 and 10")
+    return()
+  }
+  
+  set.seed(5)
+  kMedoids <- pam(clusterData, k)
+  print("-----------------------------------------------------------")
+  print("K-medoids clustering")
+  print(paste("Number of clusters ", k, sep=""))
+  print("-----------------------------------------------------------")
+  print("Medoids:")
+  print(kMedoids$medoids)
+  print("Silhouette info:")
+  
+  for(j in 1:length(kMedoids$silinfo$clus.avg.widths)) {
+    print(paste("Average silhouette width per cluster ", j, " = [", kMedoids$silinfo$clus.avg.widths[[j]], "]", sep=""))
+  }
+  
+  print(paste("Average silhouette width = [",kMedoids$silinfo$avg.width, "]", sep=""))
+  print(as.data.frame(list("Author" = author, "Predicted cluster number" = kMedoids$clustering)))
 }
 
 
