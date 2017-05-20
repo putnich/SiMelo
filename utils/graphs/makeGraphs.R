@@ -5,12 +5,12 @@ makeGraphs <- function(melodiesNames, matricesList, type) {
   library(igraph)
   
   #Creating directories for graph plots
-  if(!(dir.exists("data/plots/graphPlots/"))) {
-    dir.create("data/plots/graphPlots/")
+  if(!(dir.exists("results/plots/graphPlots/"))) {
+    dir.create("results/plots/graphPlots/")
   }
   
-  if(!(dir.exists(paste("data/plots/graphPlots/", type, sep="")))) {
-    dir.create(paste("data/plots/graphPlots/", type, sep=""))
+  if(!(dir.exists(paste("results/plots/graphPlots/", type, sep="")))) {
+    dir.create(paste("results/plots/graphPlots/", type, sep=""))
   }
   
   #Plotting melody graph for each melody
@@ -19,7 +19,7 @@ makeGraphs <- function(melodiesNames, matricesList, type) {
   for(i in 1:len) {
     degrees <- colSums(matricesList[[i]])
     g <- graph_from_adjacency_matrix(matricesList[[i]], mode="directed")
-    jpeg(paste(paste("data/plots/graphPlots/", type, sep=""), "/gplot-", melodiesNames[[i]], ".jpg", sep=""), width=4000, height=3000, unit='px')
+    jpeg(paste(paste("results/plots/graphPlots/", type, sep=""), "/gplot-", melodiesNames[[i]], ".jpg", sep=""), width=4000, height=3000, unit='px')
     V(g)$color <- sample(rainbow(12),12,replace=FALSE)
     V(g)$label.color = "black"
     V(g)$label.cex <- rescale(degrees, to = c(10,20))
@@ -33,5 +33,4 @@ makeGraphs <- function(melodiesNames, matricesList, type) {
     
     dev.off()
   }
-  
 }
