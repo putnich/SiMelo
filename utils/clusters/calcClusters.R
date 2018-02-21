@@ -1,4 +1,4 @@
-calcClusters <- function(melodyNames, authors, data, dataType, method) {
+calcClusters <- function(melodiesNames, authors, distanceMatrix, dataType, method) {
   
   #libraries
   library(cluster)
@@ -15,12 +15,16 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
   }
   
   clusterData <- matrix()
-  if(startsWith(dataType, "qgramsMatrix")) clusterData <- dist(data) #Input is document-term matrix
-  else clusterData <- as.dist(data) #Input is distance matrix
+  if(startsWith(dataType, "qgramsMatrix")) {
+      clusterData <- dist(distanceMatrix)
+  } #Input is document-term matrix
+  else {
+    clusterData <- as.dist(distanceMatrix) 
+  } #Input is distance matrix
   
   #Hierarchical clustering
   if(method == "hierarchical") {
-    hierarchicalClustering(melodyNames, authors, clusterData, dataType)
+    hierarchicalClustering(melodiesNames, authors, clusterData, dataType)
   }
   
   #K-means clustering
@@ -35,8 +39,8 @@ calcClusters <- function(melodyNames, authors, data, dataType, method) {
   
 }
 
-hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
-  
+hierarchicalClustering <- function(melodiesNames, authors, clusterData, dataType) {
+  melodiesNames <- abbreviate(melodiesNames, 30, named=F)
   print("-----------------------------------------------------------")
   print("Hierarchical clustering:")
   print("-----------------------------------------------------------")
@@ -44,7 +48,7 @@ hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
   #Writing dendrogram to the file
   jpeg(paste("results/plots/dendrograms/dendrogram-", dataType, ".jpg", sep=""), width=1000, height=1000, unit='px')
   dendrogram <- hclust(clusterData, method="ward.D") #Ward method is used
-  plot(dendrogram, labels = rownames(colNames))
+  plot(dendrogram, labels = melodiesNames)
   dev.off()
   
   plot(dendrogram) #Plotting for user
@@ -62,7 +66,8 @@ hierarchicalClustering <- function(colNames, author, clusterData, dataType) {
   print("-----------------------------------------------------------")
   print("Hierarchical clustering")
   print("-----------------------------------------------------------")
-  print(as.data.frame(list("Melody number" = colNames, "Author" = author, "Predicted cluster number" = cH)))
+  print(as.data.frame(list("Melody number" = unlist(melodiesNames), 
+                           "Author" = unlist(authors), "Predicted cluster number" = cH)))
   
 }
 

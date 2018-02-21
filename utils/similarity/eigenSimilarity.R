@@ -1,17 +1,26 @@
 eigenSimilarity <- function(melodiesTable, type) {
   
   len <- length(melodiesTable$Melody.name)
-  
-  melodiesList <- list()
-  durationsList <- list()
-  
-  for(i in 1:len) {
-    melodiesList[i] <- strsplit(as.character(melodiesTable$Melody[[i]]), "[-]")
-    durationsList[i] <- strsplit(as.character(melodiesTable$Duration[[i]]), "[-]")
+  matricesList <- list()
+  #if reading melodies from csv or reading from actual music files
+  if(typeof(melodiesTable)!="list") {
+    melodiesList <- list()
+    durationsList <- list()
+    
+    for(i in 1:len) {
+      melodiesList[i] <- strsplit(as.character(melodiesTable$Melody[[i]]), "[-]")
+      durationsList[i] <- strsplit(as.character(melodiesTable$Duration[[i]]), "[-]")
+    }
+    
+    matricesList <- makeMatrices(melodiesList, durationsList, type) #Creating adjacency matrices from musical notes sequence
+    
+  }
+  else {
+    melodiesList <- melodiesTable$Melody
+    matricesList <- makeMatrices(melodiesList, NULL, type)
   }
   
-  matricesList <- list()
-  matricesList <- makeMatrices(melodiesList, durationsList, type) #Creating adjacency matrices from musical notes sequence
+  
   
   print("-----------------------------------------------------------")
   print("Adjacency matrices (A) for melodies, respectively:")
@@ -44,10 +53,10 @@ eigenSimilarity <- function(melodiesTable, type) {
   calcClusters(melodiesNames, authors, distanceMatrix, paste("eigen", type, sep="-"), "hierarchical")
   
   #K-means clustering
-  calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-means")
+  #calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-means")
   
   #K-medoids clustering
-  calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-medoids")
+  #calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-medoids")
   
   #Generating graph for melodies
   # makeGraphs(melodiesNames, matricesList, type) #Creating graphs for each melody
@@ -73,7 +82,8 @@ makeMatrices <- function(melodiesList, durationsList, type) {
           else next()
         }
         if(type == "multi") m[melodiesList[[i]][j], melodiesList[[i]][j+1]] = m[melodiesList[[i]][j], melodiesList[[i]][j+1]] + 1
-        if(type == "duration") m[melodiesList[[i]][j], melodiesList[[i]][j+1]] = m[melodiesList[[i]][j], melodiesList[[i]][j+1]] + as.numeric(durationsList[[i]][j])
+        if(type == "duration") m[melodiesList[[i]][j], melodiesList[[i]][j+1]] = m[melodiesList[[i]][j], melodiesList[[i]][j+1]] + 
+            as.numeric(durationsList[[i]][j])
         if(type=="duration-average") {
           m[melodiesList[[i]][j], melodiesList[[i]][j+1]] = (m[melodiesList[[i]][j], melodiesList[[i]][j+1]] *  n[melodiesList[[i]][j], melodiesList[[i]][j+1]] 
                                                              + as.numeric(durationsList[[i]][j])) / (n[melodiesList[[i]][j], melodiesList[[i]][j+1]] + 1)

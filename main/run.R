@@ -6,15 +6,16 @@ run <- function() {
   source(paste(getwd(), "/utils/clusters/calcClusters.R", sep=""))
   source(paste(getwd(), "/utils/graphs/makeGraphs.R", sep=""))
   source(paste(getwd(), "/utils/metrics/calcMetrics.R", sep=""))
+  source(paste(getwd(), "/utils/input/readMelody.R", sep=""))
   main()
 }
 
 main <- function() {
   
   #Reading melodies from a .csv file
-  melodiesTable <- read.csv(paste(getwd(), "/data/melodies.csv", sep=''), sep=";") 
-  melodiesTableStrings <- read.csv(paste(getwd(), "/data/melodiesStrings.csv", sep=''), sep=";")
-  
+  #melodiesTable <- read.csv(paste(getwd(), "/data/melodies.csv", sep=''), sep=";") 
+  #melodiesTableStrings <- read.csv(paste(getwd(), "/data/melodiesStrings.csv", sep=''), sep=";")
+  melodiesTable <- readMelody(list("data/music/bach", "data/music/mozart"))
   #Analysing melodies with eigenvalues:
   #1. using simple graph
   eigenSimilarity(melodiesTable, "simple")
