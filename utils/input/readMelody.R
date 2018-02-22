@@ -1,6 +1,9 @@
 # Code mostly based on example from http://www.vesnam.com/Rblog/transcribing-music-from-audio-files-2/
 
 readMelody <- function(music) {
+  
+  library(tuneR)
+  
   melodiesList <- list()
   melodiesNames <- list()
   melodiesAuthor <- list()
@@ -30,6 +33,7 @@ readMelody <- function(music) {
   }
   melodiesTable <- list()
   melodiesTable$Melody <- melodiesList
+  melodiesNames <- abbreviate(melodiesNames, 30, named=F)
   melodiesTable$Melody.name <- melodiesNames
   melodiesTable$Author <- melodiesAuthor
   melodiesTable

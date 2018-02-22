@@ -1,4 +1,4 @@
-calcClusters <- function(melodiesNames, authors, distanceMatrix, dataType, method) {
+calcClusters <- function(melodiesNames, authors, distanceMatrix, type, method) {
   
   #libraries
   library(cluster)
@@ -15,7 +15,7 @@ calcClusters <- function(melodiesNames, authors, distanceMatrix, dataType, metho
   }
   
   clusterData <- matrix()
-  if(startsWith(dataType, "qgramsMatrix")) {
+  if(startsWith(type, "qgramsMatrix")) {
       clusterData <- dist(distanceMatrix)
   } #Input is document-term matrix
   else {
@@ -24,29 +24,29 @@ calcClusters <- function(melodiesNames, authors, distanceMatrix, dataType, metho
   
   #Hierarchical clustering
   if(method == "hierarchical") {
-    hierarchicalClustering(melodiesNames, authors, clusterData, dataType)
+    hierarchicalClustering(melodiesNames, authors, clusterData, type)
   }
   
   #K-means clustering
   if(method == "k-means") {
-    kmeansClustering(melodyNames, authors, clusterData)
+    kmeansClustering(authors, clusterData)
   }
 
   #K-medoids clustering
   if(method == "k-medoids") {
-    kmedoidsClustering(melodyNames, authors, clusterData)
+    kmedoidsClustering(authors, clusterData)
   }
   
 }
 
-hierarchicalClustering <- function(melodiesNames, authors, clusterData, dataType) {
-  melodiesNames <- abbreviate(melodiesNames, 30, named=F)
+hierarchicalClustering <- function(melodiesNames, authors, clusterData, type) {
+  
   print("-----------------------------------------------------------")
   print("Hierarchical clustering:")
   print("-----------------------------------------------------------")
   
   #Writing dendrogram to the file
-  jpeg(paste("results/plots/dendrograms/dendrogram-", dataType, ".jpg", sep=""), width=1000, height=1000, unit='px')
+  jpeg(paste("results/plots/dendrograms/dendrogram-", type, ".jpg", sep=""), width=1000, height=1000, unit='px')
   dendrogram <- hclust(clusterData, method="ward.D") #Ward method is used
   plot(dendrogram, labels = melodiesNames)
   dev.off()
@@ -71,7 +71,7 @@ hierarchicalClustering <- function(melodiesNames, authors, clusterData, dataType
   
 }
 
-kmeansClustering <- function(colNames, author, clusterData) {
+kmeansClustering <- function(authors, clusterData) {
  
   
   print("-----------------------------------------------------------")
@@ -101,13 +101,13 @@ kmeansClustering <- function(colNames, author, clusterData) {
   print("K-means clustering")
   print(paste("Number of clusters ", k, sep=""))
   print("-----------------------------------------------------------")
-  print(as.data.frame(list("Author" = author,"Predicted cluster number" = kMeans$cluster)))
+  print(as.data.frame(list("Author" = unlist(authors),"Predicted cluster number" = kMeans$cluster)))
   
   print(paste("Total within-cluster sum of squares: ", kMeans$tot.withinss, sep=""))
   
 }
 
-kmedoidsClustering <- function(colNames, author, clusterData) {
+kmedoidsClustering <- function(authors, clusterData) {
   
   print("-----------------------------------------------------------")
   print("K-medoids:")
@@ -145,7 +145,7 @@ kmedoidsClustering <- function(colNames, author, clusterData) {
   }
   
   print(paste("Average silhouette width = [",kMedoids$silinfo$avg.width, "]", sep=""))
-  print(as.data.frame(list("Author" = author, "Predicted cluster number" = kMedoids$clustering)))
+  print(as.data.frame(list("Author" = unlist(authors), "Predicted cluster number" = kMedoids$clustering)))
 }
 
 

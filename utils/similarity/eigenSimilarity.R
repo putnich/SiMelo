@@ -53,10 +53,10 @@ eigenSimilarity <- function(melodiesTable, type) {
   calcClusters(melodiesNames, authors, distanceMatrix, paste("eigen", type, sep="-"), "hierarchical")
   
   #K-means clustering
-  #calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-means")
+  calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-means")
   
   #K-medoids clustering
-  #calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-medoids")
+  calcClusters(melodiesNames, authors, distanceMatrix, "eigen", "k-medoids")
   
   #Generating graph for melodies
   # makeGraphs(melodiesNames, matricesList, type) #Creating graphs for each melody
